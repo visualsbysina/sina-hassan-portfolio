@@ -10,6 +10,21 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
+        void: {
+          DEFAULT: "#07080A",
+          raised: "#0E1014",
+          line: "rgba(237, 234, 227, 0.12)",
+        },
+        paper: {
+          DEFAULT: "#EDEAE3",
+          muted: "rgba(237, 234, 227, 0.64)",
+          faint: "rgba(237, 234, 227, 0.4)",
+        },
+        signal: {
+          DEFAULT: "#4DA3FF",
+          deep: "#0A78B5",
+        },
+        ember: "#FF7A2F",
         cream: {
           DEFAULT: "#F4F1EA",
           dark: "#E8E4DB",

@@ -104,6 +104,24 @@
     @apply relative flex aspect-[8/5] w-full items-center justify-center overflow-hidden bg-gradient-to-br;
   }
 
+  .hud-label {
+    @apply font-mono text-[10px] font-medium uppercase tracking-[0.16em];
+  }
+
+  .hud-panel {
+    @apply border border-void-line bg-void/70 px-4 py-3 backdrop-blur-md;
+  }
+
+  .hud-button {
+    @apply inline-flex min-h-[40px] items-center gap-2 border border-void-line bg-void/70 px-4 font-mono text-[11px] uppercase tracking-[0.14em] text-paper backdrop-blur-md transition-colors;
+    @apply hover:border-paper/40 disabled:cursor-not-allowed disabled:opacity-40;
+    @apply focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-signal;
+  }
+
+  .hud-button--hot {
+    @apply border-ember/60 text-ember hover:border-ember hover:bg-ember/10;
+  }
+
   .project-card-link {
     @apply flex h-full flex-col outline-none transition-colors duration-300;
     @apply hover:bg-accent/[0.04];

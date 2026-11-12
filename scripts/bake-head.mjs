@@ -10,18 +10,24 @@
 //   count × i8  xyz   normal
 //   count × u8        luminance
 //
-// usage: node scripts/bake-head.mjs <in.glb> <out.bin> [count]
+// topWeight multiplies sampling density above splitY (0 = bottom of the
+// model, 1 = top), so a bust can spend its points on the face instead of
+// the shoulders.
+//
+// usage: node scripts/bake-head.mjs <in.glb> <out.bin> [count] [topWeight] [splitY]
 
 import fs from "node:fs";
 import { NodeIO } from "@gltf-transform/core";
 import sharp from "sharp";
 
-const [, , inPath, outPath, countArg] = process.argv;
+const [, , inPath, outPath, countArg, topWeightArg, splitArg] = process.argv;
 if (!inPath || !outPath) {
-  console.error("usage: node scripts/bake-head.mjs <in.glb> <out.bin> [count]");
+  console.error("usage: node scripts/bake-head.mjs <in.glb> <out.bin> [count] [topWeight] [splitY]");
   process.exit(1);
 }
 const COUNT = Number(countArg ?? 72000);
+const TOP_WEIGHT = Number(topWeightArg ?? 1);
+const SPLIT_Y = Number(splitArg ?? 0.5);
 const MAGIC = 0x54504853; // "SHPT"
 
 const doc = await new NodeIO().read(inPath);
@@ -44,6 +50,13 @@ function luminanceAt(u, v) {
   return 0.2126 * pixels[i] + 0.7152 * pixels[i + 1] + 0.0722 * pixels[i + 2];
 }
 
+let yMin = Infinity, yMax = -Infinity;
+for (let i = 1; i < pos.length; i += 3) (yMin = Math.min(yMin, pos[i])), (yMax = Math.max(yMax, pos[i]));
+const smoothstep = (a, b, x) => {
+  const t = Math.min(1, Math.max(0, (x - a) / (b - a)));
+  return t * t * (3 - 2 * t);
+};
+
 const tris = idx.length / 3;
 const cumulative = new Float64Array(tris);
 let total = 0;
@@ -52,7 +65,9 @@ for (let t = 0; t < tris; t++) {
   const ux = pos[b] - pos[a], uy = pos[b + 1] - pos[a + 1], uz = pos[b + 2] - pos[a + 2];
   const vx = pos[c] - pos[a], vy = pos[c + 1] - pos[a + 1], vz = pos[c + 2] - pos[a + 2];
   const cx = uy * vz - uz * vy, cy = uz * vx - ux * vz, cz = ux * vy - uy * vx;
-  total += 0.5 * Math.hypot(cx, cy, cz);
+  const h = ((pos[a + 1] + pos[b + 1] + pos[c + 1]) / 3 - yMin) / (yMax - yMin);
+  const weight = 1 + (TOP_WEIGHT - 1) * smoothstep(SPLIT_Y - 0.05, SPLIT_Y + 0.05, h);
+  total += 0.5 * Math.hypot(cx, cy, cz) * weight;
   cumulative[t] = total;
 }
 

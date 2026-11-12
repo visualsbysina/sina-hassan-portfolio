@@ -52,3 +52,6 @@ Thumbs.db
 # Claude
 .claude/
 /.next-build/
+
+# large 3D source files (bake inputs)
+/assets/*.glb

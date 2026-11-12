@@ -141,9 +141,9 @@ export default function PlanetRoundsPage() {
             <h3 className="label-mono md:col-span-3">Also on this site</h3>
             <div className="md:col-span-9">
               <p className="text-[clamp(1.25rem,2vw,1.75rem)] leading-snug tracking-[-0.015em] text-paper">
-                The portrait on the home page started as a 29.5 MB GLB. A second bake script samples 72,000 points evenly
-                across its surface, keeps the brightness of the texture under each one, and quantizes everything into a
-                703 KB buffer that a custom shader assembles, pushes around, and dissolves.
+                The portrait on the home page started as a 77 MB GLB. A second bake script samples 72,000 points across
+                its surface, weighted toward the face, keeps the brightness of the texture under each one, and quantizes
+                everything into a 703 KB buffer that a custom shader assembles, pushes around, and dissolves.
               </p>
               <Link href="/" className="hud-label mt-8 inline-flex items-center gap-2 text-paper hover:text-signal">
                 Back to the home page <ArrowRight />

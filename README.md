@@ -63,11 +63,11 @@ src/
     └── structured-data.ts    # JSON-LD
 public/
 ├── lab/planet/*.pvm          # Baked Planet Rounds maps
-├── models/hero-head.points.bin  # Baked hero point cloud (703 KB)
+├── models/hero-portrait.points.bin  # Baked hero point cloud (703 KB)
 ├── images/og-image.jpg       # 1200 × 630 share image (captured from the hero)
 └── resume.pdf
 assets/
-└── hero-head.glb             # 29.5 MB source scan for the hero (not served)
+└── hero-portrait.glb         # 77 MB source model for the hero (gitignored, not served)
 scripts/
 ├── bake-planet.mjs           # Game .vmap → web .pvm
 └── bake-head.mjs             # GLB → point cloud
@@ -83,11 +83,13 @@ Both 3D features load small pre-baked binaries instead of raw source files.
 node scripts/bake-planet.mjs ~/Projects/planet-rounds/Assets/StreamingAssets/Maps/oasis.vmap public/lab/planet/oasis.pvm 170
 ```
 
-**Hero portrait.** `bake-head.mjs` samples 72,000 points evenly over the surface of `assets/hero-head.glb`, storing quantized positions, normals, and baked brightness (29.5 MB → 703 KB).
+**Hero portrait.** `bake-head.mjs` samples 72,000 points over the surface of `assets/hero-portrait.glb`, storing quantized positions, normals, and baked brightness (77 MB → 703 KB). The model is a head-and-shoulders bust, so sampling is 2.5× denser above 42% of its height to keep the face detailed. The source GLB is too large for git; keep a copy outside the repo.
 
 ```bash
-node scripts/bake-head.mjs assets/hero-head.glb public/models/hero-head.points.bin 72000
+node scripts/bake-head.mjs assets/hero-portrait.glb public/models/hero-portrait.points.bin 72000 2.5 0.42
 ```
+
+The script expects a single mesh with Y up and the face toward +Z.
 
 Files under `/lab` and `/models` are served with a one-year immutable cache header (`next.config.js`), so rename the output if you re-bake.
 

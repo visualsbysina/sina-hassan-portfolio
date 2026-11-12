@@ -138,10 +138,12 @@ function Head({
   useEffect(() => () => geometry.dispose(), [geometry]);
 
   const wide = size.width / size.height > 1.05;
-  const height = wide ? viewport.height * 0.8 : Math.min(viewport.height * 0.55, viewport.width * 1.1);
-  const scale = height / (cloud.extent[1] * 2);
-  const x = wide ? viewport.width * 0.21 : 0;
-  const y = wide ? viewport.height * 0.01 : viewport.height * 0.2;
+  const [ex, ey] = cloud.extent;
+  const scale = wide
+    ? Math.min((viewport.height * 0.76) / (ey * 2), (viewport.width * 0.46) / (ex * 2))
+    : Math.min((viewport.height * 0.5) / (ey * 2), (viewport.width * 0.96) / (ex * 2));
+  const x = wide ? viewport.width * 0.23 : 0;
+  const y = wide ? -viewport.height * 0.03 : viewport.height * 0.2;
 
   useEffect(() => {
     uniforms.uSize.value = size.height * gl.getPixelRatio() * 0.0125;
@@ -210,7 +212,7 @@ export default function HeadField({ className, onReady }: { className?: string; 
 
   useEffect(() => {
     let cancelled = false;
-    loadPoints("/models/hero-head.points.bin")
+    loadPoints("/models/hero-portrait.points.bin")
       .then((c) => {
         if (cancelled) return;
         setCloud(c);

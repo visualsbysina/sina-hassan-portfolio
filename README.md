@@ -29,7 +29,7 @@ NEXT_DIST_DIR=.next-build pnpm build
 
 | Route | Content |
 |-------|---------|
-| `/` | Hero, credentials, selected work, Planet Rounds feature, experiments, project index, federal platforms, experience, about, contact |
+| `/` | Hero, credentials, selected work, Planet Rounds feature, experiments, project index, other contributions, experience, about, contact |
 | `/work/[slug]` | Case studies (statically generated from `src/data/projects.ts`) |
 | `/lab/planet-rounds` | Full-screen playable planet with a "how it's built" write-up |
 | `/resume.pdf` | Résumé download |

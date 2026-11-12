@@ -1,16 +1,16 @@
 import Image from "next/image";
-import { federalPlatforms } from "@/data/federal-platforms";
+import { contributions } from "@/data/contributions";
 import Reveal from "@/components/motion/Reveal";
 import { ArrowUpRight } from "@/components/ui/Icons";
 
-export default function FederalPlatformsSection() {
+export default function ContributionsSection() {
   return (
-    <section id="federal-platforms" className="scroll-mt-20 pb-24 md:pb-36" aria-labelledby="federal-platforms-heading">
+    <section id="contributions" className="scroll-mt-20 pb-24 md:pb-36" aria-labelledby="contributions-heading">
       <div className="editorial-grid">
-        <h2 id="federal-platforms-heading" className="label-mono mb-6">
-          Selected Federal Platforms
+        <h2 id="contributions-heading" className="label-mono mb-6">
+          Also contributed to
         </h2>
-        {federalPlatforms.map((platform) => (
+        {contributions.map((platform) => (
           <Reveal as="article" key={platform.name} className="grid border border-void-line md:grid-cols-12">
             {platform.image && (
               <div className="relative aspect-[16/10] overflow-hidden border-b border-void-line md:col-span-7 md:border-b-0 md:border-r">
@@ -22,7 +22,6 @@ export default function FederalPlatformsSection() {
                 <p className="hud-label text-paper-faint">{platform.organization}</p>
                 <h3 className="heading-display mt-4 text-[clamp(2rem,3.6vw,3.5rem)] text-paper">{platform.name}</h3>
                 <p className="text-body mt-5">{platform.contribution}</p>
-                <p className="mt-4 text-[15px] leading-relaxed text-paper-faint">{platform.context}</p>
               </div>
               {platform.url && (
                 <a href={platform.url} target="_blank" rel="noopener noreferrer" className="hud-label inline-flex items-center gap-2 text-paper hover:text-signal">

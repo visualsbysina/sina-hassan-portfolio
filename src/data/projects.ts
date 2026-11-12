@@ -2,8 +2,76 @@ import type { Project } from "@/types";
 
 export const projects: Project[] = [
   {
-    slug: "imls-2025-redesign",
+    slug: "vega-studio",
     number: "01",
+    title: "Vega Studio",
+    organization: "Vega Studio",
+    role: "Designer and Full-Stack Developer",
+    stack: [
+      "Next.js",
+      "React",
+      "TypeScript",
+      "Redux",
+      "GSAP",
+      "Three.js",
+      "Sanity",
+    ],
+    summary:
+      "Built an interactive digital headquarters for Vega Studio, a design-tech company producing multidimensional brand experiences. The site combines a desktop-inspired interface, configurable themes, audiovisual content, case studies, and modular content windows in a responsive Next.js application.",
+    contribution:
+      "Designed and developed an interactive Next.js experience for a digital-first design-tech studio.",
+    featured: true,
+    image: {
+      src: "/images/projects/vega-studio.jpg",
+      alt: "Vega Studio website with architectural visual",
+      width: 800,
+      height: 500,
+    },
+    caseStudy: {
+      headline: "An interactive digital headquarters for a design-tech studio",
+      overview:
+        "Built an interactive digital headquarters for Vega Studio, a design-tech company producing multidimensional brand experiences.",
+      context:
+        "Vega Studio needed a distinctive web presence that demonstrated design sensibility and technical capability. The resulting website presents services, case studies, and audiovisual content through a modular, desktop-inspired interface.",
+      challenge:
+        "Deliver a responsive Next.js application that supports configurable themes, rich media presentation, and interactive visual elements while remaining performant and maintainable.",
+      built: [
+        "Next.js application with structured content integration",
+        "Responsive layout system for services and case studies",
+        "Motion and interaction treatments using GSAP",
+        "Interactive visual presentation elements",
+        "Modular, windowed interface patterns",
+      ],
+      approach: [
+        "Designed and built the application architecture in Next.js and React",
+        "Implemented theme and layout systems for configurable presentation",
+        "Integrated audiovisual content and case study modules",
+        "Applied GSAP for polished motion with reduced-motion fallbacks",
+        "Used Three.js for interactive visual elements where appropriate",
+      ],
+      accessibility: [
+        "Reduced-motion support for animations",
+        "Semantic HTML with proper heading hierarchy",
+        "Keyboard-accessible navigation and interactive controls",
+        "Decorative visual elements hidden from assistive technology",
+      ],
+      outcomes: [
+        "Interactive Next.js experience for a digital-first design-tech studio",
+        "Modular content presentation including case studies and services",
+        "The resulting website includes a theme selector, media player, VegaTV, and windowed interface patterns",
+      ],
+      screenshots: [
+        {
+          src: "/images/projects/vega-studio.jpg",
+          alt: "Vega Studio homepage with architectural visual",
+          caption: "Studio homepage with interactive visual elements",
+        },
+      ],
+    },
+  },
+  {
+    slug: "imls-2025-redesign",
+    number: "02",
     title: "IMLS 2025 Redesign",
     subtitle: "An accessible Drupal platform for America's libraries and museums",
     organization: "Institute of Museum and Library Services",
@@ -83,134 +151,62 @@ export const projects: Project[] = [
     },
   },
   {
-    slug: "us-dot-multisite",
-    number: "02",
-    title: "U.S. DOT Federal Multisite",
-    organization: "U.S. Department of Transportation",
-    role: "Senior Software Engineer / Drupal",
-    stack: ["Drupal", "Twig", "Sass", "JavaScript", "Section 508", "QA"],
-    summary:
-      "Supported a large federal Drupal multisite spanning more than 15 transportation properties. I developed shared templates and components, reduced redundant front-end implementation, resolved cross-site QA issues, and helped maintain consistent, accessible experiences across distinct agency brands.",
-    contribution:
-      "Developed reusable front-end architecture for a 15+ site federal Drupal multisite.",
-    featured: true,
-    image: {
-      src: "/images/projects/us-dot.jpg",
-      alt: "U.S. Department of Transportation website with highway imagery",
-      width: 800,
-      height: 500,
-    },
-    caseStudy: {
-      headline: "One front-end system supporting 15+ federal websites",
-      overview:
-        "Supported a large federal Drupal multisite spanning more than 15 transportation properties through shared front-end architecture, component development, and cross-site maintenance.",
-      context:
-        "The U.S. Department of Transportation operates numerous sub-agencies and programs, each requiring distinct content while maintaining accessible, consistent experiences. Associated properties include USMMA.edu, FHWA.gov, FRA.dot.gov, and Permits.performance.gov.",
-      challenge:
-        "Develop shared templates and components that reduce redundant front-end implementation, resolve cross-site QA issues, and maintain accessible experiences across distinct agency brands.",
-      built: [
-        "Front-end development across a 15+ site Drupal multisite",
-        "Site building and configuration",
-        "Twig template development",
-        "Sass and JavaScript implementation",
-        "Reusable component development",
-        "Theming across distinct agency properties",
-        "Redundancy reduction through shared patterns",
-        "Cross-site QA fixes",
-        "Section 508 implementation",
-      ],
-      approach: [
-        "Developed base theme patterns with override capabilities per sub-site",
-        "Created modular Sass partials for typography, grid, and components",
-        "Standardized JavaScript utilities for shared interactive behaviors",
-        "Maintained and extended existing templates rather than redesigning all properties",
-        "Resolved cross-site QA issues and accessibility defects",
-      ],
-      accessibility: [
-        "Section 508 compliance across shared components",
-        "Consistent keyboard navigation patterns",
-        "Accessible skip links and landmark structure",
-        "Tested form controls and data tables for screen reader compatibility",
-      ],
-      outcomes: [
-        "Front-end development across a 15+ site federal Drupal multisite",
-        "Reusable component development reducing redundant implementation",
-        "Cross-site QA fixes and Section 508 implementation",
-        "Consistent, accessible experiences across distinct agency brands",
-      ],
-      screenshots: [
-        {
-          src: "/images/projects/us-dot.jpg",
-          alt: "U.S. DOT website homepage",
-          caption: "Federal multisite homepage with agency branding",
-        },
-      ],
-    },
-  },
-  {
-    slug: "vega-studio",
+    slug: "stanley-black-decker",
     number: "03",
-    title: "Vega Studio",
-    organization: "Vega Studio",
-    role: "Designer and Full-Stack Developer",
+    title: "Stanley Black & Decker Global Multisite",
+    organization: "Stanley Black & Decker",
+    role: "Drupal Developer",
     stack: [
-      "Next.js",
-      "React",
-      "TypeScript",
-      "Redux",
-      "GSAP",
-      "Three.js",
-      "Sanity",
+      "Drupal 10",
+      "Acquia Site Studio",
+      "Responsive UI",
+      "Multilingual components",
     ],
     summary:
-      "Built an interactive digital headquarters for Vega Studio, a design-tech company producing multidimensional brand experiences. The site combines a desktop-inspired interface, configurable themes, audiovisual content, case studies, and modular content windows in a responsive Next.js application.",
+      "Developed multilingual, responsive components for a global Drupal 10 multisite using Acquia Site Studio.",
     contribution:
-      "Designed and developed an interactive Next.js experience for a digital-first design-tech studio.",
+      "Developed multilingual, responsive components for a global Drupal 10 multisite.",
     featured: true,
     image: {
-      src: "/images/projects/vega-studio.jpg",
-      alt: "Vega Studio website with architectural visual",
+      src: "/images/projects/stanley-bdk.jpg",
+      alt: "Stanley Black & Decker global website",
       width: 800,
       height: 500,
     },
     caseStudy: {
-      headline: "An interactive digital headquarters for a design-tech studio",
       overview:
-        "Built an interactive digital headquarters for Vega Studio, a design-tech company producing multidimensional brand experiences.",
+        "Component development for Stanley Black & Decker's global Drupal 10 multisite, built with Acquia Site Studio for multilingual, brand-consistent experiences.",
       context:
-        "Vega Studio needed a distinctive web presence that demonstrated design sensibility and technical capability. The resulting website presents services, case studies, and audiovisual content through a modular, desktop-inspired interface.",
+        "A global enterprise requiring localized content across multiple regions while maintaining unified brand standards and responsive design.",
       challenge:
-        "Deliver a responsive Next.js application that supports configurable themes, rich media presentation, and interactive visual elements while remaining performant and maintainable.",
+        "Build reusable UI components that content teams could configure independently while supporting multilingual content and responsive layouts across a global multisite.",
       built: [
-        "Next.js application with structured content integration",
-        "Responsive layout system for services and case studies",
-        "Motion and interaction treatments using GSAP",
-        "Interactive visual presentation elements",
-        "Modular, windowed interface patterns",
+        "Built reusable UI components with Acquia Site Studio",
+        "Multilingual-ready layout and content block patterns",
+        "Responsive grid and typography system",
+        "Reusable hero, card, and navigation components",
       ],
       approach: [
-        "Designed and built the application architecture in Next.js and React",
-        "Implemented theme and layout systems for configurable presentation",
-        "Integrated audiovisual content and case study modules",
-        "Applied GSAP for polished motion with reduced-motion fallbacks",
-        "Used Three.js for interactive visual elements where appropriate",
+        "Configured Site Studio components with flexible content fields",
+        "Built responsive breakpoints aligned to brand guidelines",
+        "Tested multilingual rendering across locale configurations",
+        "Established component patterns for content editor adoption",
       ],
       accessibility: [
-        "Reduced-motion support for animations",
-        "Semantic HTML with proper heading hierarchy",
-        "Keyboard-accessible navigation and interactive controls",
-        "Decorative visual elements hidden from assistive technology",
+        "Responsive layouts tested across device sizes",
+        "Accessible form and navigation patterns",
+        "Language attribute handling for screen readers",
       ],
       outcomes: [
-        "Interactive Next.js experience for a digital-first design-tech studio",
-        "Modular content presentation including case studies and services",
-        "The resulting website includes a theme selector, media player, VegaTV, and windowed interface patterns",
+        "Built reusable UI components for a global Drupal 10 multisite",
+        "Multilingual component system with Acquia Site Studio",
+        "Responsive reusable UI adopted across global properties",
       ],
       screenshots: [
         {
-          src: "/images/projects/vega-studio.jpg",
-          alt: "Vega Studio homepage with architectural visual",
-          caption: "Studio homepage with interactive visual elements",
+          src: "/images/projects/stanley-bdk.jpg",
+          alt: "Stanley Black & Decker website component layout",
+          caption: "Global multisite component system",
         },
       ],
     },
@@ -273,8 +269,127 @@ export const projects: Project[] = [
     },
   },
   {
-    slug: "pcah-gov",
+    slug: "bourne-creatives",
     number: "05",
+    title: "Bourne Creatives",
+    organization: "Bourne Creatives",
+    role: "Front-End Developer",
+    stack: ["Responsive UI", "HTML", "CSS", "JavaScript"],
+    summary:
+      "Developed a responsive website for a music and entertainment company specializing in 360-degree brand development.",
+    contribution:
+      "Developed a responsive website for a music and entertainment company specializing in 360-degree brand development.",
+    featured: false,
+    image: {
+      src: "/images/projects/bourne-creatives.svg",
+      alt: "Bourne Creatives website",
+      width: 800,
+      height: 500,
+    },
+    caseStudy: {
+      headline: "A digital platform for music, entertainment, and artist development",
+      overview:
+        "Developed a responsive website for Bourne Creatives, a music and entertainment company providing artist development, branding, creative, and marketing services.",
+      context:
+        "Bourne Creatives needed a public-facing digital presence to present their music, entertainment, and artist development services.",
+      challenge:
+        "Deliver a responsive website that communicates the company's creative and marketing capabilities across devices.",
+      built: [
+        "Responsive front-end development",
+        "Layout and interface implementation",
+        "Content presentation for services and artist development",
+      ],
+      approach: [
+        "Implemented responsive layouts for cross-device presentation",
+        "Built interface components for content sections",
+        "Collaborated on content structure and visual presentation",
+      ],
+      accessibility: [
+        "Responsive layouts for mobile and desktop",
+        "Semantic HTML structure",
+        "Accessible navigation patterns",
+      ],
+      outcomes: [
+        "Responsive website for a music and entertainment company",
+        "Public digital platform for artist development and creative services",
+      ],
+      screenshots: [
+        {
+          src: "/images/projects/bourne-creatives.svg",
+          alt: "Bourne Creatives website homepage",
+          caption: "Music and entertainment company website",
+        },
+      ],
+    },
+  },
+  {
+    slug: "us-dot-multisite",
+    number: "06",
+    title: "U.S. DOT Multisite",
+    organization: "U.S. Department of Transportation",
+    role: "Senior Software Engineer / Drupal",
+    stack: ["Drupal", "Twig", "Sass", "JavaScript", "Section 508", "QA"],
+    summary:
+      "Supported a large federal Drupal multisite spanning more than 15 transportation properties. I developed shared templates and components, reduced redundant front-end implementation, resolved cross-site QA issues, and helped maintain consistent, accessible experiences across distinct agency brands.",
+    contribution:
+      "Developed reusable front-end architecture for a 15+ site federal Drupal multisite.",
+    featured: false,
+    image: {
+      src: "/images/projects/us-dot.jpg",
+      alt: "U.S. Department of Transportation website with highway imagery",
+      width: 800,
+      height: 500,
+    },
+    caseStudy: {
+      headline: "One front-end system supporting 15+ federal websites",
+      overview:
+        "Supported a large federal Drupal multisite spanning more than 15 transportation properties through shared front-end architecture, component development, and cross-site maintenance.",
+      context:
+        "The U.S. Department of Transportation operates numerous sub-agencies and programs, each requiring distinct content while maintaining accessible, consistent experiences. Associated properties include USMMA.edu, FHWA.gov, FRA.dot.gov, and Permits.performance.gov.",
+      challenge:
+        "Develop shared templates and components that reduce redundant front-end implementation, resolve cross-site QA issues, and maintain accessible experiences across distinct agency brands.",
+      built: [
+        "Front-end development across a 15+ site Drupal multisite",
+        "Site building and configuration",
+        "Twig template development",
+        "Sass and JavaScript implementation",
+        "Reusable component development",
+        "Theming across distinct agency properties",
+        "Redundancy reduction through shared patterns",
+        "Cross-site QA fixes",
+        "Section 508 implementation",
+      ],
+      approach: [
+        "Developed base theme patterns with override capabilities per sub-site",
+        "Created modular Sass partials for typography, grid, and components",
+        "Standardized JavaScript utilities for shared interactive behaviors",
+        "Maintained and extended existing templates rather than redesigning all properties",
+        "Resolved cross-site QA issues and accessibility defects",
+      ],
+      accessibility: [
+        "Section 508 compliance across shared components",
+        "Consistent keyboard navigation patterns",
+        "Accessible skip links and landmark structure",
+        "Tested form controls and data tables for screen reader compatibility",
+      ],
+      outcomes: [
+        "Front-end development across a 15+ site federal Drupal multisite",
+        "Reusable component development reducing redundant implementation",
+        "Cross-site QA fixes and Section 508 implementation",
+        "Consistent, accessible experiences across distinct agency brands",
+      ],
+      screenshots: [
+        {
+          src: "/images/projects/us-dot.jpg",
+          alt: "U.S. DOT website homepage",
+          caption: "Federal multisite homepage with agency branding",
+        },
+      ],
+    },
+  },
+  {
+    slug: "pcah-gov",
+    number: "07",
     title: "PCAH.gov",
     organization: "President's Committee on the Arts and the Humanities",
     role: "Front-End Lead",
@@ -327,121 +442,6 @@ export const projects: Project[] = [
           src: "/images/projects/pcah-gov.svg",
           alt: "PCAH.gov homepage",
           caption: "Public platform for federal arts and humanities policy",
-        },
-      ],
-    },
-  },
-  {
-    slug: "stanley-black-decker",
-    number: "06",
-    title: "Stanley Black & Decker Global Multisite",
-    organization: "Stanley Black & Decker",
-    role: "Drupal Developer",
-    stack: [
-      "Drupal 10",
-      "Acquia Site Studio",
-      "Responsive UI",
-      "Multilingual components",
-    ],
-    summary:
-      "Developed multilingual, responsive components for a global Drupal 10 multisite using Acquia Site Studio.",
-    contribution:
-      "Developed multilingual, responsive components for a global Drupal 10 multisite.",
-    featured: false,
-    image: {
-      src: "/images/projects/stanley-bdk.jpg",
-      alt: "Stanley Black & Decker global website",
-      width: 800,
-      height: 500,
-    },
-    caseStudy: {
-      overview:
-        "Component development for Stanley Black & Decker's global Drupal 10 multisite, built with Acquia Site Studio for multilingual, brand-consistent experiences.",
-      context:
-        "A global enterprise requiring localized content across multiple regions while maintaining unified brand standards and responsive design.",
-      challenge:
-        "Build reusable UI components that content teams could configure independently while supporting multilingual content and responsive layouts across a global multisite.",
-      built: [
-        "Built reusable UI components with Acquia Site Studio",
-        "Multilingual-ready layout and content block patterns",
-        "Responsive grid and typography system",
-        "Reusable hero, card, and navigation components",
-      ],
-      approach: [
-        "Configured Site Studio components with flexible content fields",
-        "Built responsive breakpoints aligned to brand guidelines",
-        "Tested multilingual rendering across locale configurations",
-        "Established component patterns for content editor adoption",
-      ],
-      accessibility: [
-        "Responsive layouts tested across device sizes",
-        "Accessible form and navigation patterns",
-        "Language attribute handling for screen readers",
-      ],
-      outcomes: [
-        "Built reusable UI components for a global Drupal 10 multisite",
-        "Multilingual component system with Acquia Site Studio",
-        "Responsive reusable UI adopted across global properties",
-      ],
-      screenshots: [
-        {
-          src: "/images/projects/stanley-bdk.jpg",
-          alt: "Stanley Black & Decker website component layout",
-          caption: "Global multisite component system",
-        },
-      ],
-    },
-  },
-  {
-    slug: "bourne-creatives",
-    number: "07",
-    title: "Bourne Creatives",
-    organization: "Bourne Creatives",
-    role: "Front-End Developer",
-    stack: ["Responsive UI", "HTML", "CSS", "JavaScript"],
-    summary:
-      "Developed a responsive website for a music and entertainment company specializing in 360-degree brand development.",
-    contribution:
-      "Developed a responsive website for a music and entertainment company specializing in 360-degree brand development.",
-    featured: false,
-    image: {
-      src: "/images/projects/bourne-creatives.svg",
-      alt: "Bourne Creatives website",
-      width: 800,
-      height: 500,
-    },
-    caseStudy: {
-      headline: "A digital platform for music, entertainment, and artist development",
-      overview:
-        "Developed a responsive website for Bourne Creatives, a music and entertainment company providing artist development, branding, creative, and marketing services.",
-      context:
-        "Bourne Creatives needed a public-facing digital presence to present their music, entertainment, and artist development services.",
-      challenge:
-        "Deliver a responsive website that communicates the company's creative and marketing capabilities across devices.",
-      built: [
-        "Responsive front-end development",
-        "Layout and interface implementation",
-        "Content presentation for services and artist development",
-      ],
-      approach: [
-        "Implemented responsive layouts for cross-device presentation",
-        "Built interface components for content sections",
-        "Collaborated on content structure and visual presentation",
-      ],
-      accessibility: [
-        "Responsive layouts for mobile and desktop",
-        "Semantic HTML structure",
-        "Accessible navigation patterns",
-      ],
-      outcomes: [
-        "Responsive website for a music and entertainment company",
-        "Public digital platform for artist development and creative services",
-      ],
-      screenshots: [
-        {
-          src: "/images/projects/bourne-creatives.svg",
-          alt: "Bourne Creatives website homepage",
-          caption: "Music and entertainment company website",
         },
       ],
     },

@@ -18,7 +18,7 @@ export function createMetadata(overrides?: Partial<Metadata>): Metadata {
       "WCAG",
       "Section 508",
       "Design Systems",
-      "Federal Web Development",
+      "React Three Fiber",
       "Three.js",
       "WebGL",
       "Baltimore",

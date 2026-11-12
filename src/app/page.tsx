@@ -3,7 +3,7 @@ import CredibilityStrip from "@/components/sections/CredibilityStrip";
 import SelectedWork from "@/components/sections/SelectedWork";
 import PlanetFeature from "@/components/sections/PlanetFeature";
 import AllWork from "@/components/sections/AllWork";
-import FederalPlatformsSection from "@/components/sections/FederalPlatformsSection";
+import ContributionsSection from "@/components/sections/ContributionsSection";
 import ExperimentsSection from "@/components/sections/ExperimentsSection";
 import ExperienceSection from "@/components/sections/ExperienceSection";
 import AboutSection from "@/components/sections/AboutSection";
@@ -19,7 +19,7 @@ export default function HomePage() {
       <PlanetFeature />
       <ExperimentsSection />
       <AllWork projects={projects} />
-      <FederalPlatformsSection />
+      <ContributionsSection />
       <ExperienceSection />
       <AboutSection />
       <ContactSection />

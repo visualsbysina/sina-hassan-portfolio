@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="500" viewBox="0 0 800 500">
+  <rect width="800" height="500" fill="#1a2332"/>
+  <defs>
+    <pattern id="g" width="40" height="40" patternUnits="userSpaceOnUse">
+      <path d="M40 0L0 0 0 40" fill="none" stroke="rgba(10,120,181,0.15)" stroke-width="0.5"/>
+    </pattern>
+  </defs>
+  <rect width="800" height="500" fill="url(#g)"/>
+  <text x="400" y="240" text-anchor="middle" fill="rgba(244,241,234,0.4)" font-family="monospace" font-size="14">SCREENSHOT PLACEHOLDER</text>
+  <text x="400" y="270" text-anchor="middle" fill="rgba(10,120,181,0.6)" font-family="monospace" font-size="12">800 × 500</text>
+</svg>

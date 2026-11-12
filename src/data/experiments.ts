@@ -2,6 +2,14 @@ import type { Experiment } from "@/types";
 
 export const experiments: Experiment[] = [
   {
+    slug: "planet-rounds",
+    title: "Planet Rounds",
+    description:
+      "A networked tank game I'm building in Unity, fought on small voxel planets where every shell carves the terrain. Its planet renderer is rebuilt for the browser here.",
+    tags: ["Unity", "Three.js", "Web Workers", "GLSL"],
+    href: "/lab/planet-rounds",
+  },
+  {
     slug: "generative-forest",
     title: "Generative Forest",
     description:

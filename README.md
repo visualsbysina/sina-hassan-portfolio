@@ -1,11 +1,11 @@
 # Sina Hassan — Portfolio
 
-Production-ready personal portfolio for Sina Hassan, senior front-end developer. Built with Next.js, TypeScript, and Tailwind CSS following an editorial, case-study archive aesthetic.
+Personal portfolio for Sina Hassan, senior front-end developer. Built with Next.js, TypeScript, Tailwind CSS, React Three Fiber, GSAP, and Lenis. The site is dark and WebGL-led: a point-cloud portrait in the hero, scroll-driven case-study cards, shader image previews on the project index, and a playable voxel planet from Sina's Unity game.
 
 ## Local Setup
 
 ```bash
-cd ~/Sites/sina-portfolio
+cd ~/Sites/sina-hassan-portfolio
 pnpm install
 pnpm dev
 ```
@@ -19,134 +19,128 @@ pnpm build
 pnpm start
 ```
 
+To build while `pnpm dev` is running, point the build at a separate folder so it doesn't clobber the dev server's `.next`:
+
+```bash
+NEXT_DIST_DIR=.next-build pnpm build
+```
+
+## Routes
+
+| Route | Content |
+|-------|---------|
+| `/` | Hero, credentials, selected work, Planet Rounds feature, experiments, project index, federal platforms, experience, about, contact |
+| `/work/[slug]` | Case studies (statically generated from `src/data/projects.ts`) |
+| `/lab/planet-rounds` | Full-screen playable planet with a "how it's built" write-up |
+| `/resume.pdf` | Résumé download |
+
 ## Project Structure
 
 ```
 src/
 ├── app/
-│   ├── layout.tsx          # Root layout, fonts, SEO, structured data
-│   ├── page.tsx            # Home page
-│   ├── globals.css         # Design tokens, utilities, grain texture
-│   ├── not-found.tsx       # 404 page
-│   ├── robots.ts           # robots.txt
-│   ├── sitemap.ts          # XML sitemap
-│   └── work/[slug]/        # Case study routes
+│   ├── layout.tsx            # Root layout, fonts, SEO, structured data, smooth scroll
+│   ├── page.tsx              # Home page
+│   ├── globals.css           # Tokens, utilities, motion keyframes, reduced-motion rules
+│   ├── lab/planet-rounds/    # Playable demo page
+│   ├── work/[slug]/          # Case study routes
+│   ├── not-found.tsx, robots.ts, sitemap.ts
 ├── components/
-│   ├── layout/             # Header, Footer, SkipLink
-│   ├── sections/           # Hero, CredibilityStrip, SelectedWork, etc.
-│   ├── ui/                 # ProjectCard, ButtonLink, ThemeToggle, etc.
-│   └── case-study/         # CaseStudyLayout template
-├── data/
-│   ├── site.ts             # Hero, about, contact, site config
-│   ├── navigation.ts       # Header nav items
-│   ├── projects.ts         # All projects and case study content
-│   ├── experience.ts       # Work history timeline
-│   ├── skills.ts           # Technical capabilities
-│   └── experiments.ts      # Interactive experiments
-├── lib/
-│   ├── metadata.ts         # SEO and Open Graph helpers
-│   ├── structured-data.ts  # JSON-LD for Person and projects
-│   └── utils.ts            # cn() utility
-└── types/
-    └── index.ts            # Shared TypeScript interfaces
+│   ├── hero/                 # HeroCanvas (loader + fallback), HeadField (point-cloud shader)
+│   ├── planet/               # PlanetDemo (loader + fallback), PlanetExperience (R3F scene)
+│   ├── work/                 # HoverPreview (WebGL image plane for the project index)
+│   ├── motion/               # SmoothScroll (Lenis + GSAP ticker), Reveal (scroll-in)
+│   ├── sections/             # Home page sections
+│   ├── layout/               # Header, Footer, SkipLink
+│   ├── case-study/           # CaseStudyLayout template
+│   └── ui/                   # Icons, SectionIntro, ProjectPlaceholder
+├── data/                     # Typed content (site, projects, experience, skills, experiments, nav)
+└── lib/
+    ├── planet/               # .pvm decoder, chunk mesher, mesher Web Worker
+    ├── points.ts             # Hero point-cloud decoder
+    ├── webgl.ts              # WebGL2 detection hook
+    ├── metadata.ts           # createPageMetadata / createProjectMetadata
+    └── structured-data.ts    # JSON-LD
 public/
-├── images/projects/        # Project screenshots (replace placeholders)
-├── images/og-image.svg     # Open Graph image
-└── resume.pdf              # Résumé download (replace placeholder)
+├── lab/planet/*.pvm          # Baked Planet Rounds maps
+├── models/hero-head.points.bin  # Baked hero point cloud (703 KB)
+├── images/og-image.jpg       # 1200 × 630 share image (captured from the hero)
+└── resume.pdf
+assets/
+└── hero-head.glb             # 29.5 MB source scan for the hero (not served)
+scripts/
+├── bake-planet.mjs           # Game .vmap → web .pvm
+└── bake-head.mjs             # GLB → point cloud
 ```
+
+## 3D Assets
+
+Both 3D features load small pre-baked binaries instead of raw source files.
+
+**Planet maps.** The game stores maps in `~/Projects/planet-rounds/Assets/StreamingAssets/Maps/*.vmap`. `bake-planet.mjs` downsamples them to a 170³ grid, keeps the game's palette and run-length encoding, and deflates the result (147 KB–1.5 MB per map). In the browser, a Web Worker inflates the file with `DecompressionStream`, meshes visible faces with per-vertex ambient occlusion in 24³ chunks, and re-meshes only the touched chunks when a crater is carved.
+
+```bash
+node scripts/bake-planet.mjs ~/Projects/planet-rounds/Assets/StreamingAssets/Maps/oasis.vmap public/lab/planet/oasis.pvm 170
+```
+
+**Hero portrait.** `bake-head.mjs` samples 72,000 points evenly over the surface of `assets/hero-head.glb`, storing quantized positions, normals, and baked brightness (29.5 MB → 703 KB).
+
+```bash
+node scripts/bake-head.mjs assets/hero-head.glb public/models/hero-head.points.bin 72000
+```
+
+Files under `/lab` and `/models` are served with a one-year immutable cache header (`next.config.js`), so rename the output if you re-bake.
 
 ## Design Tokens
 
 | Token | Value | Usage |
 |-------|-------|-------|
-| `cream` | `#F4F1EA` | Page background |
-| `ink` | `#151515` | Primary text |
-| `ink-muted` | `#4A4A4A` | Body copy |
-| `accent` | `#0A78B5` | Links, labels, CTAs, wireframe |
-| `accent-hover` | `#086090` | Button hover state |
+| `void` | `#07080A` | Page background |
+| `void-raised` | `#0E1014` | Panels, cards |
+| `paper` | `#EDEAE3` | Primary text |
+| `paper-muted` | 64% paper (≈7:1) | Body copy |
+| `paper-faint` | 52% paper (≈4.7:1) | Labels, metadata |
+| `signal` | `#4DA3FF` | Accent, links, point-cloud rim light |
+| `ember` | `#FF7A2F` | Planet Rounds, pointer heat |
 
-### Typography
-
-- **Headlines:** Inter (via `next/font`) — large grotesk sans-serif with tight tracking
-- **Body:** Inter — readable sans-serif at 16px base
-- **Labels/Tags:** JetBrains Mono — project numbers, tech tags, dates, section labels
-
-Display sizes use fluid `clamp()` scaling via Tailwind custom font sizes (`text-display-xl`, `text-display-lg`, `text-display-md`).
+**Typography:** Instrument Sans for headlines and body, Instrument Serif italic for accent words, IBM Plex Mono for labels and HUD text, all via `next/font`. Display sizes use `clamp()` (`text-mega`, `text-hero`).
 
 ## Content Editing
 
-All content lives in typed data files under `src/data/`. Update these without touching components:
+All content lives in typed data files under `src/data/`:
 
-- **Projects:** `src/data/projects.ts` — add/edit projects, case study content, stack tags
-- **Experience:** `src/data/experience.ts` — work history entries
-- **Skills:** `src/data/skills.ts` — technical capability categories
-- **Experiments:** `src/data/experiments.ts` — creative lab projects
-- **Site copy:** `src/data/site.ts` — hero text, about bio, contact info
-- **Navigation:** `src/data/navigation.ts` — header links
-
-Featured projects (shown in the 3-card grid) are controlled by the `featured: true` flag in `projects.ts`.
+- **Projects:** `projects.ts` — projects, case studies, stack tags. `featured: true` puts a project in the stacked "Selected work" cards.
+- **Experience:** `experience.ts`
+- **Skills:** `skills.ts`
+- **Experiments:** `experiments.ts` — an `href` makes a card a live link
+- **Site copy:** `site.ts` — hero, about, contact, SEO config
+- **Navigation:** `navigation.ts`
 
 ## Screenshot Replacement
 
-Place project screenshots in `public/images/projects/` using these filenames and dimensions:
-
-| File | Dimensions | Project |
-|------|-----------|---------|
-| `imls-2025.png` or `.webp` | 800 × 500 | IMLS 2025 Redesign |
-| `imls-2025-map.png` | 800 × 500 | IMLS grants map |
-| `us-dot.png` | 800 × 500 | U.S. DOT Multisite |
-| `red-hat-clouddot.png` | 800 × 500 | Red Hat CloudDot |
-| `stanley-bdk.png` | 800 × 500 | Stanley Black & Decker |
-| `vega-studio.png` | 800 × 500 | Vega Studio |
-
-After adding real images, update the `src` paths in `src/data/projects.ts` from `.svg` to your file extension. The `ProjectPlaceholder` component automatically falls back to a styled placeholder if an image fails to load.
-
-Case study pages use 16:9 hero screenshots and optional additional images defined in each project's `caseStudy.screenshots` array.
-
-## Résumé Replacement
-
-Replace `public/resume.pdf` with your actual résumé PDF. The download link appears in:
-
-- Hero secondary CTA
-- Header navigation ("Résumé")
-- Contact section
-- Footer
+Project images live in `public/images/projects/`. Red Hat, PCAH, and Bourne still use SVG placeholders. After adding real images, update the `src` paths in `src/data/projects.ts`. Cards and case studies crop to 16:10 and 16:9; 1600 px wide is a good target.
 
 ## Deployment to Vercel
 
 1. Push the repository to GitHub
-2. Import the project at [vercel.com](https://vercel.com)
-3. Vercel auto-detects Next.js — no special configuration needed
-4. Update `siteConfig.url` in `src/data/site.ts` to your production domain
-5. Replace `public/images/og-image.svg` with a 1200 × 630 PNG for social sharing
+2. Import it at [vercel.com](https://vercel.com); Next.js is detected automatically
+3. Confirm `siteConfig.url` in `src/data/site.ts` matches the production domain
 
-```bash
-# Or deploy via CLI
-npx vercel
-```
+## Accessibility & Performance
 
-## Accessibility & Performance Decisions
-
-- **Semantic HTML** with correct heading hierarchy (single h1 on home, h2 for sections)
-- **Skip-to-content link** for keyboard users
-- **Visible focus states** on all interactive elements (`:focus-visible`)
-- **WCAG AA contrast** across light and dark modes
-- **Reduced motion support** — hero canvas animation, scroll behavior, and CSS transitions respect `prefers-reduced-motion`
-- **Decorative hero visual** hidden from assistive technology (`aria-hidden`, `role="presentation"`)
-- **Lazy-loaded hero canvas** via dynamic import with SSR disabled
-- **Static generation** for all pages including case studies
-- **Optimized fonts** via `next/font` with `display: swap`
-- **Minimal layout shift** — placeholder dimensions set on all images
-- **JSON-LD structured data** for Person, WebSite, and CreativeWork (projects)
-- **Optional dark mode** with system preference detection and manual toggle
+- **Semantic structure:** one h1 per page, ordered headings, landmarks, skip link, and `main` focusable as the skip target.
+- **Decorative WebGL is hidden:** the hero, hover preview, and marquee are `aria-hidden`; the marquee has an `sr-only` list equivalent. Decorative index numbers are hidden from screen readers.
+- **The planet is operable:** "Blast a crater" and "Restore planet" are real buttons, the lab page switches maps with a labelled native select, and crater and loading changes are announced through a polite live region.
+- **Reduced motion:** Lenis is off, scroll reveals and the headline intro are skipped, the marquee becomes static wrapped text, the hero renders on demand without the assemble intro, and the planet stops auto-rotating and shaking. GSAP effects are registered through `gsap.matchMedia` so they never run under reduced motion.
+- **Fallbacks:** without WebGL2 the hero shows a static glow, the index shows normal thumbnails, and the planet shows a text explanation. Hover previews only run on fine-pointer devices.
+- **Contrast:** all text tokens meet WCAG AA on `void`.
+- **Performance:** 3D scenes are dynamically imported with SSR off; the hero and planet stop rendering when scrolled off screen; the planet uses `PerformanceMonitor` to drop DPR on slow devices; meshing runs in a worker with transferable buffers. Home page first-load JS is about 164 KB, and every route is statically generated.
+- **SEO:** canonical URLs, Open Graph and Twitter cards, sitemap, robots, and JSON-LD for Person, WebSite, and CreativeWork.
 
 ## Missing Assets & Content
 
-The following placeholders should be replaced before launch:
-
-- [ ] Real project screenshots (currently SVG placeholders)
+- [ ] Real screenshots for Red Hat, PCAH, and Bourne
+- [ ] Planet Rounds gameplay capture (video or stills) for the lab page
 - [ ] Actual résumé PDF (`public/resume.pdf`)
-- [ ] Open Graph image at 1200 × 630 (`public/images/og-image.svg`)
-- [ ] Confirm contact email (`hello@sinahassan.com` in `src/data/site.ts`)
-- [ ] Confirm production URL (`https://sinahassan.com` in `src/data/site.ts`)
-- [ ] Experiment project links (currently display-only cards)
+- [ ] Confirm contact email and production URL in `src/data/site.ts`
+- [ ] Links for the remaining experiments (Generative Forest, Eastern Bloc Rally, etc.)

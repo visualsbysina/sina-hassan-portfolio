@@ -18,7 +18,7 @@ const config: Config = {
         paper: {
           DEFAULT: "#EDEAE3",
           muted: "rgba(237, 234, 227, 0.64)",
-          faint: "rgba(237, 234, 227, 0.4)",
+          faint: "rgba(237, 234, 227, 0.52)",
         },
         signal: {
           DEFAULT: "#4DA3FF",
@@ -51,6 +51,8 @@ const config: Config = {
         mono: ["var(--font-mono)", "ui-monospace", "monospace"],
       },
       fontSize: {
+        "mega": ["clamp(3.5rem, 13vw, 15rem)", { lineHeight: "0.85", letterSpacing: "-0.055em" }],
+        "hero": ["clamp(2.6rem, 6.6vw, 7.5rem)", { lineHeight: "0.92", letterSpacing: "-0.045em" }],
         "display-xl": [
           "clamp(2.75rem, 5vw + 1rem, 5.5rem)",
           { lineHeight: "1.12", letterSpacing: "-0.022em" },

@@ -7,22 +7,19 @@ export default function Footer() {
   return (
     <footer className="section-rule">
       <div className="editorial-grid flex flex-col gap-4 py-8 md:flex-row md:items-center md:justify-between">
-        <p className="text-[14px] text-ink-muted">
-          © {year} {siteConfig.name}. {siteConfig.jobTitle}.
+        <p className="hud-label text-paper-faint">
+          © {year} {siteConfig.name} · {siteConfig.jobTitle} · {siteConfig.location}
         </p>
         <div className="flex gap-6">
-          <Link
-            href="/resume.pdf"
-            className="text-[14px] text-accent hover:text-accent-hover"
-          >
+          <Link href="/lab/planet-rounds" className="hud-label link-underline text-paper-muted hover:text-paper">
+            Planet Rounds
+          </Link>
+          <a href={siteConfig.resumePath} className="hud-label link-underline text-paper-muted hover:text-paper">
             Résumé
-          </Link>
-          <Link
-            href={`mailto:${siteConfig.email}`}
-            className="text-[14px] text-accent hover:text-accent-hover"
-          >
+          </a>
+          <a href={`mailto:${siteConfig.email}`} className="hud-label link-underline text-paper-muted hover:text-paper">
             Email
-          </Link>
+          </a>
         </div>
       </div>
     </footer>

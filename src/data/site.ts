@@ -10,7 +10,7 @@ export const siteConfig: SiteConfig = {
   location: "Baltimore, MD",
   jobTitle: "Senior Front-End Developer",
   resumePath: "/resume.pdf",
-  ogImage: "/images/og-image.svg",
+  ogImage: "/images/og-image.jpg",
 };
 
 export const heroContent = {

@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Instrument_Sans, Instrument_Serif, IBM_Plex_Mono } from "next/font/google";
 import "./globals.css";
 import { createMetadata } from "@/lib/metadata";
@@ -9,6 +9,7 @@ import {
 import SkipLink from "@/components/layout/SkipLink";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
+import SmoothScroll from "@/components/motion/SmoothScroll";
 
 const instrumentSans = Instrument_Sans({
   subsets: ["latin"],
@@ -33,6 +34,11 @@ const ibmPlexMono = IBM_Plex_Mono({
 
 export const metadata: Metadata = createMetadata();
 
+export const viewport: Viewport = {
+  themeColor: "#07080A",
+  colorScheme: "dark",
+};
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -55,8 +61,11 @@ export default function RootLayout({
       </head>
       <body className="grain-texture font-sans">
         <SkipLink />
+        <SmoothScroll />
         <Header />
-        <main id="main-content">{children}</main>
+        <main id="main-content" tabIndex={-1} className="outline-none">
+          {children}
+        </main>
         <Footer />
       </body>
     </html>

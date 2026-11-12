@@ -18,5 +18,11 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 1,
     },
     ...projectEntries,
+    {
+      url: `${siteConfig.url}/lab/planet-rounds`,
+      lastModified: new Date(),
+      changeFrequency: "monthly",
+      priority: 0.8,
+    },
   ];
 }

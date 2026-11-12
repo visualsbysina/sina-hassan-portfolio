@@ -1,67 +1,39 @@
 import Image from "next/image";
 import { federalPlatforms } from "@/data/federal-platforms";
-import SectionHeading from "@/components/ui/SectionHeading";
+import Reveal from "@/components/motion/Reveal";
+import { ArrowUpRight } from "@/components/ui/Icons";
 
 export default function FederalPlatformsSection() {
   return (
-    <section
-      id="federal-platforms"
-      className="section-rule scroll-mt-24 py-section"
-      aria-labelledby="federal-platforms-heading"
-    >
+    <section id="federal-platforms" className="scroll-mt-20 pb-24 md:pb-36" aria-labelledby="federal-platforms-heading">
       <div className="editorial-grid">
-        <SectionHeading
-          label="Selected Federal Platforms"
-          id="federal-platforms-heading"
-        />
-
-        <div className="space-y-8">
-          {federalPlatforms.map((platform) => (
-            <article
-              key={platform.name}
-              className="border border-rule p-6 md:p-8"
-            >
-              {platform.image && (
-                <div className="relative mb-6 aspect-[16/10] overflow-hidden border border-rule">
-                  <Image
-                    src={platform.image.src}
-                    alt={platform.image.alt}
-                    fill
-                    className="object-cover object-top"
-                    sizes="(max-width: 768px) 100vw, 1360px"
-                  />
-                </div>
-              )}
-              <div className="flex flex-col gap-2 md:flex-row md:items-start md:justify-between">
-                <div>
-                  <h3 className="heading-serif text-xl text-ink md:text-2xl">
-                    {platform.url ? (
-                      <a
-                        href={platform.url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="transition-colors hover:text-accent"
-                      >
-                        {platform.name}
-                      </a>
-                    ) : (
-                      platform.name
-                    )}
-                  </h3>
-                  <p className="mt-1 font-mono text-xs text-accent">
-                    {platform.organization}
-                  </p>
-                </div>
+        <h2 id="federal-platforms-heading" className="label-mono mb-6">
+          Selected Federal Platforms
+        </h2>
+        {federalPlatforms.map((platform) => (
+          <Reveal as="article" key={platform.name} className="grid border border-void-line md:grid-cols-12">
+            {platform.image && (
+              <div className="relative aspect-[16/10] overflow-hidden border-b border-void-line md:col-span-7 md:border-b-0 md:border-r">
+                <Image src={platform.image.src} alt={platform.image.alt} fill sizes="(min-width: 768px) 58vw, 100vw" className="object-cover object-top" />
               </div>
-              <p className="mt-4 max-w-prose text-[17px] leading-relaxed text-ink-muted md:text-lg">
-                {platform.contribution}
-              </p>
-              <p className="mt-3 max-w-prose text-[15px] leading-relaxed text-ink-faint md:text-base">
-                {platform.context}
-              </p>
-            </article>
-          ))}
-        </div>
+            )}
+            <div className="flex flex-col justify-between gap-8 p-6 md:col-span-5 md:p-10">
+              <div>
+                <p className="hud-label text-paper-faint">{platform.organization}</p>
+                <h3 className="heading-display mt-4 text-[clamp(2rem,3.6vw,3.5rem)] text-paper">{platform.name}</h3>
+                <p className="text-body mt-5">{platform.contribution}</p>
+                <p className="mt-4 text-[15px] leading-relaxed text-paper-faint">{platform.context}</p>
+              </div>
+              {platform.url && (
+                <a href={platform.url} target="_blank" rel="noopener noreferrer" className="hud-label inline-flex items-center gap-2 text-paper hover:text-signal">
+                  Visit {platform.name}
+                  <span className="sr-only">(opens in a new tab)</span>
+                  <ArrowUpRight />
+                </a>
+              )}
+            </div>
+          </Reveal>
+        ))}
       </div>
     </section>
   );

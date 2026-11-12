@@ -1,6 +1,7 @@
 import Hero from "@/components/sections/Hero";
 import CredibilityStrip from "@/components/sections/CredibilityStrip";
 import SelectedWork from "@/components/sections/SelectedWork";
+import PlanetFeature from "@/components/sections/PlanetFeature";
 import AllWork from "@/components/sections/AllWork";
 import FederalPlatformsSection from "@/components/sections/FederalPlatformsSection";
 import ExperimentsSection from "@/components/sections/ExperimentsSection";
@@ -10,16 +11,15 @@ import ContactSection from "@/components/sections/ContactSection";
 import { getFeaturedProjects, projects } from "@/data/projects";
 
 export default function HomePage() {
-  const featured = getFeaturedProjects();
-
   return (
     <>
       <Hero />
       <CredibilityStrip />
-      <SelectedWork projects={featured} />
+      <SelectedWork projects={getFeaturedProjects()} />
+      <PlanetFeature />
+      <ExperimentsSection />
       <AllWork projects={projects} />
       <FederalPlatformsSection />
-      <ExperimentsSection />
       <ExperienceSection />
       <AboutSection />
       <ContactSection />

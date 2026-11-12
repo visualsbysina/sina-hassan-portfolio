@@ -48,18 +48,45 @@ export function createMetadata(overrides?: Partial<Metadata>): Metadata {
   };
 }
 
+export function createPageMetadata({
+  title,
+  description,
+  path,
+}: {
+  title: string;
+  description: string;
+  path: string;
+}): Metadata {
+  return createMetadata({
+    title,
+    description,
+    alternates: { canonical: path },
+    openGraph: {
+      type: "website",
+      locale: "en_US",
+      siteName: siteConfig.name,
+      title: `${title} — ${siteConfig.name}`,
+      description,
+      url: `${siteConfig.url}${path}`,
+      images: [{ url: siteConfig.ogImage, width: 1200, height: 630, alt: siteConfig.title }],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: `${title} — ${siteConfig.name}`,
+      description,
+      images: [siteConfig.ogImage],
+    },
+  });
+}
+
 export function createProjectMetadata(project: {
   title: string;
   summary: string;
   slug: string;
 }): Metadata {
-  return createMetadata({
+  return createPageMetadata({
     title: project.title,
     description: project.summary,
-    openGraph: {
-      title: `${project.title} — ${siteConfig.name}`,
-      description: project.summary,
-      url: `${siteConfig.url}/work/${project.slug}`,
-    },
+    path: `/work/${project.slug}`,
   });
 }

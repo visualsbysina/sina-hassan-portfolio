@@ -63,7 +63,8 @@ src/
     └── structured-data.ts    # JSON-LD
 public/
 ├── lab/planet/*.pvm          # Baked Planet Rounds maps
-├── models/hero-portrait-rgb.points.bin  # Baked hero point cloud (914 KB)
+├── models/hero-portrait-rgb.points.bin     # Baked hero point cloud (914 KB)
+├── models/hero-portrait-detail.points.bin  # Dense hover layer (2.2 MB, hover devices only)
 ├── images/og-image.jpg       # 1200 × 630 share image (captured from the hero)
 └── resume.pdf
 assets/
@@ -83,7 +84,13 @@ Both 3D features load small pre-baked binaries instead of raw source files.
 node scripts/bake-planet.mjs ~/Projects/planet-rounds/Assets/StreamingAssets/Maps/oasis.vmap public/lab/planet/oasis.pvm 170
 ```
 
-**Hero portrait.** `bake-head.mjs` samples 72,000 points over the surface of `assets/hero-portrait.glb`, storing quantized positions, normals, brightness, and texture color (77 MB → 914 KB). The hero renders the points in monochrome and reveals their color around the cursor. The model is a head-and-shoulders bust, so sampling is 2.5× denser above 42% of its height to keep the face detailed. The source GLB is too large for git; keep a copy outside the repo.
+**Hero portrait.** `bake-head.mjs` samples 72,000 points over the surface of `assets/hero-portrait.glb`, storing quantized positions, normals, brightness, and texture color (77 MB → 914 KB). The hero renders the points in monochrome and reveals their color around the cursor.
+
+On devices that can hover, a second, denser bake (180,000 points, 2.2 MB) loads after the intro. It's drawn opaque and depth-tested only under the cursor, so that patch looks like the solid textured model. Touch devices never download it.
+
+```bash
+node scripts/bake-head.mjs assets/hero-portrait.glb public/models/hero-portrait-detail.points.bin 180000 4 0.42
+``` The model is a head-and-shoulders bust, so sampling is 2.5× denser above 42% of its height to keep the face detailed. The source GLB is too large for git; keep a copy outside the repo.
 
 ```bash
 node scripts/bake-head.mjs assets/hero-portrait.glb public/models/hero-portrait-rgb.points.bin 72000 2.5 0.42

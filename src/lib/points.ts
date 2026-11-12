@@ -18,6 +18,8 @@ export interface PointCloud {
   colors: Float32Array;
   /** half extents after centering */
   extent: [number, number, number];
+  /** bounds center that was subtracted from the positions */
+  center: [number, number, number];
 }
 
 export function decodePoints(buffer: ArrayBuffer): PointCloud {
@@ -46,7 +48,15 @@ export function decodePoints(buffer: ArrayBuffer): PointCloud {
     }
     luminance[i] = l[i] / 255;
   }
-  return { count, positions, normals, luminance, colors, extent: [span[0] / 2, span[1] / 2, span[2] / 2] };
+  return {
+    count,
+    positions,
+    normals,
+    luminance,
+    colors,
+    extent: [span[0] / 2, span[1] / 2, span[2] / 2],
+    center: [center[0], center[1], center[2]],
+  };
 }
 
 export async function loadPoints(url: string): Promise<PointCloud> {

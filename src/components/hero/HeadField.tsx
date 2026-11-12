@@ -16,6 +16,7 @@ uniform float uSize;
 uniform vec3 uPointer;
 uniform float uPointerActive;
 uniform float uFadeFloor;
+uniform float uDetail;
 attribute vec3 aScatter;
 attribute float aLum;
 attribute float aRand;
@@ -61,6 +62,7 @@ void main() {
 const FRAGMENT = /* glsl */ `
 uniform vec3 uPaper;
 uniform vec3 uSignal;
+uniform float uDetail;
 varying float vLum;
 varying float vRim;
 varying float vReveal;
@@ -76,10 +78,64 @@ void main() {
   mono = mix(mono, uSignal, clamp(vRim * 1.15, 0.0, 1.0));
   vec3 col = mix(mono, vColor * 1.2, vReveal);
   // additive points stack, so revealed color needs low alpha and no back faces to stay true
-  float a = (1.0 - r) * vAlpha * mix(0.3 + vLum * 0.4 + vRim * 0.55, 0.55 * vFacing, vReveal);
+  float revealAlpha = mix(0.55, 0.1, uDetail) * vFacing;
+  float a = (1.0 - r) * vAlpha * mix(0.3 + vLum * 0.4 + vRim * 0.55, revealAlpha, vReveal);
   gl_FragColor = vec4(col, a);
 }
 `;
+
+// The dense layer only exists under the cursor. It is opaque and depth-tested,
+// so the revealed patch reads as the solid, textured model rather than a glow.
+const DETAIL_VERTEX = /* glsl */ `
+uniform float uIntro;
+uniform float uScroll;
+uniform float uSize;
+uniform vec3 uPointer;
+uniform float uPointerActive;
+attribute vec3 aColor;
+attribute float aRand;
+varying vec3 vColor;
+
+void main() {
+  float reveal = smoothstep(0.55, 0.28, length(position.xy - uPointer.xy)) * uPointerActive
+    * step(1.0, uIntro) * (1.0 - smoothstep(0.0, 0.08, uScroll));
+  if (reveal <= aRand) {
+    gl_Position = vec4(2.0, 2.0, 2.0, 1.0);
+    gl_PointSize = 0.0;
+    return;
+  }
+  vec4 mv = modelViewMatrix * vec4(position, 1.0);
+  gl_Position = projectionMatrix * mv;
+  gl_PointSize = uSize * 1.35 / -mv.z;
+  vColor = aColor;
+}
+`;
+
+const DETAIL_FRAGMENT = /* glsl */ `
+varying vec3 vColor;
+
+void main() {
+  vec2 c = gl_PointCoord * 2.0 - 1.0;
+  if (dot(c, c) > 1.0) discard;
+  gl_FragColor = vec4(vColor, 1.0);
+}
+`;
+
+function buildDetailGeometry(detail: PointCloud, base: PointCloud) {
+  const rand = new Float32Array(detail.count);
+  for (let i = 0; i < detail.count; i++) rand[i] = Math.random();
+  const g = new THREE.BufferGeometry();
+  g.setAttribute("position", new THREE.BufferAttribute(detail.positions, 3));
+  g.setAttribute("aColor", new THREE.BufferAttribute(detail.colors, 3));
+  g.setAttribute("aRand", new THREE.BufferAttribute(rand, 1));
+  g.translate(
+    detail.center[0] - base.center[0],
+    detail.center[1] - base.center[1],
+    detail.center[2] - base.center[2],
+  );
+  g.boundingSphere = new THREE.Sphere(new THREE.Vector3(), 6);
+  return g;
+}
 
 function buildGeometry(cloud: PointCloud) {
   const { count } = cloud;
@@ -112,11 +168,13 @@ interface PointerState {
 
 function Head({
   cloud,
+  detail,
   container,
   pointer,
   reducedMotion,
 }: {
   cloud: PointCloud;
+  detail: PointCloud | null;
   container: React.RefObject<HTMLDivElement | null>;
   pointer: PointerState;
   reducedMotion: boolean;
@@ -124,6 +182,7 @@ function Head({
   const group = useRef<THREE.Group>(null);
   const { size, viewport, camera, gl, invalidate } = useThree();
   const geometry = useMemo(() => buildGeometry(cloud), [cloud]);
+  const detailGeometry = useMemo(() => (detail ? buildDetailGeometry(detail, cloud) : null), [detail, cloud]);
   const start = useRef<number | null>(null);
   const uniforms = useMemo(
     () => ({
@@ -136,12 +195,27 @@ function Head({
       uFadeFloor: { value: -cloud.extent[1] },
       uPaper: { value: new THREE.Color("#EDEAE3") },
       uSignal: { value: new THREE.Color("#4DA3FF") },
+      uDetail: { value: 0 },
     }),
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [],
   );
+  const detailUniforms = useMemo(
+    () => ({
+      uIntro: uniforms.uIntro,
+      uScroll: uniforms.uScroll,
+      uSize: uniforms.uSize,
+      uPointer: uniforms.uPointer,
+      uPointerActive: uniforms.uPointerActive,
+    }),
+    [uniforms],
+  );
 
   useEffect(() => () => geometry.dispose(), [geometry]);
+  useEffect(() => {
+    uniforms.uDetail.value = detailGeometry ? 1 : 0;
+    return () => detailGeometry?.dispose();
+  }, [detailGeometry, uniforms]);
 
   const wide = size.width / size.height > 1.05;
   const [ex, ey] = cloud.extent;
@@ -193,7 +267,12 @@ function Head({
   return (
     <group position={[x, y, 0]} scale={scale}>
       <group ref={group}>
-        <points geometry={geometry} frustumCulled={false}>
+        {detailGeometry && (
+          <points geometry={detailGeometry} frustumCulled={false} renderOrder={0}>
+            <shaderMaterial vertexShader={DETAIL_VERTEX} fragmentShader={DETAIL_FRAGMENT} uniforms={detailUniforms} />
+          </points>
+        )}
+        <points geometry={geometry} frustumCulled={false} renderOrder={1}>
           <shaderMaterial
             vertexShader={VERTEX}
             fragmentShader={FRAGMENT}
@@ -214,6 +293,7 @@ export default function HeadField({ className, onReady }: { className?: string; 
   const inView = useInView(container, "0px");
   const reducedMotion = useReducedMotion();
   const [cloud, setCloud] = useState<PointCloud | null>(null);
+  const [detail, setDetail] = useState<PointCloud | null>(null);
   const pointer = useRef<PointerState>({ ndc: new THREE.Vector2(0, 0), lastMove: 0 }).current;
 
   useEffect(() => {
@@ -229,6 +309,21 @@ export default function HeadField({ className, onReady }: { className?: string; 
       cancelled = true;
     };
   }, [onReady]);
+
+  // Only devices that can hover ever see the dense layer, so only they download it.
+  useEffect(() => {
+    if (!cloud || reducedMotion || !window.matchMedia("(hover: hover) and (pointer: fine)").matches) return;
+    let cancelled = false;
+    const timer = window.setTimeout(() => {
+      loadPoints("/models/hero-portrait-detail.points.bin")
+        .then((d) => !cancelled && setDetail(d))
+        .catch(() => {});
+    }, INTRO_SECONDS * 1000);
+    return () => {
+      cancelled = true;
+      window.clearTimeout(timer);
+    };
+  }, [cloud, reducedMotion]);
 
   useEffect(() => {
     const onMove = (e: PointerEvent) => {
@@ -251,7 +346,9 @@ export default function HeadField({ className, onReady }: { className?: string; 
         gl={{ antialias: false, alpha: true, powerPreference: "high-performance" }}
         style={{ pointerEvents: "none" }}
       >
-        {cloud && <Head cloud={cloud} container={container} pointer={pointer} reducedMotion={reducedMotion} />}
+        {cloud && (
+          <Head cloud={cloud} detail={detail} container={container} pointer={pointer} reducedMotion={reducedMotion} />
+        )}
       </Canvas>
     </div>
   );

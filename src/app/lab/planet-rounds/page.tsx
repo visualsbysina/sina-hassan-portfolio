@@ -142,8 +142,9 @@ export default function PlanetRoundsPage() {
             <div className="md:col-span-9">
               <p className="text-[clamp(1.25rem,2vw,1.75rem)] leading-snug tracking-[-0.015em] text-paper">
                 The portrait on the home page started as a 77 MB GLB. A second bake script samples 72,000 points across
-                its surface, weighted toward the face, keeps the brightness of the texture under each one, and quantizes
-                everything into a 703 KB buffer that a custom shader assembles, pushes around, and dissolves.
+                its surface, weighted toward the face, keeps the texture color under each one, and quantizes everything into
+                a 914 KB buffer. A custom shader assembles it, shows it in monochrome, brings the color back under the
+                cursor, and dissolves it on scroll.
               </p>
               <Link href="/" className="hud-label mt-8 inline-flex items-center gap-2 text-paper hover:text-signal">
                 Back to the home page <ArrowRight />

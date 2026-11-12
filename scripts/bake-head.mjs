@@ -5,10 +5,11 @@
 // baked base color under it. The textures themselves are not shipped.
 //
 // Layout (little endian):
-//   u32 magic "SHPT", u32 count, f32 min xyz, f32 max xyz
+//   u32 magic "SHPC", u32 count, f32 min xyz, f32 max xyz
 //   count × u16 xyz   position, normalized to the bounds
 //   count × i8  xyz   normal
-//   count × u8        luminance
+//   count × u8        luminance, stretched to the full 0–255 range
+//   count × u8  rgb   base color (sRGB)
 //
 // topWeight multiplies sampling density above splitY (0 = bottom of the
 // model, 1 = top), so a bust can spend its points on the face instead of
@@ -28,7 +29,7 @@ if (!inPath || !outPath) {
 const COUNT = Number(countArg ?? 72000);
 const TOP_WEIGHT = Number(topWeightArg ?? 1);
 const SPLIT_Y = Number(splitArg ?? 0.5);
-const MAGIC = 0x54504853; // "SHPT"
+const MAGIC = 0x43504853; // "SHPC"
 
 const doc = await new NodeIO().read(inPath);
 const prim = doc.getRoot().listMeshes()[0].listPrimitives()[0];
@@ -43,11 +44,11 @@ const { data: pixels, info } = await sharp(Buffer.from(tex.getImage()))
   .raw()
   .toBuffer({ resolveWithObject: true });
 
-function luminanceAt(u, v) {
+function colorAt(u, v) {
   const x = Math.min(info.width - 1, Math.max(0, Math.floor((u - Math.floor(u)) * info.width)));
   const y = Math.min(info.height - 1, Math.max(0, Math.floor((v - Math.floor(v)) * info.height)));
   const i = (y * info.width + x) * info.channels;
-  return 0.2126 * pixels[i] + 0.7152 * pixels[i + 1] + 0.0722 * pixels[i + 2];
+  return [pixels[i], pixels[i + 1], pixels[i + 2]];
 }
 
 let yMin = Infinity, yMax = -Infinity;
@@ -86,6 +87,7 @@ function pickTriangle(r) {
 const P = new Float32Array(COUNT * 3);
 const N = new Int8Array(COUNT * 3);
 const L = new Uint8Array(COUNT);
+const C = new Uint8Array(COUNT * 3);
 const min = [Infinity, Infinity, Infinity];
 const max = [-Infinity, -Infinity, -Infinity];
 let lumMin = 255, lumMax = 0;
@@ -113,7 +115,9 @@ for (let i = 0; i < COUNT; i++) {
   N[i * 3 + 2] = Math.round((nz / len) * 127);
   const u = w0 * uv[ia * 2] + r1 * uv[ib * 2] + r2 * uv[ic * 2];
   const v = w0 * uv[ia * 2 + 1] + r1 * uv[ib * 2 + 1] + r2 * uv[ic * 2 + 1];
-  lum[i] = luminanceAt(u, v);
+  const [r, g, b] = colorAt(u, v);
+  C.set([r, g, b], i * 3);
+  lum[i] = 0.2126 * r + 0.7152 * g + 0.0722 * b;
   lumMin = Math.min(lumMin, lum[i]);
   lumMax = Math.max(lumMax, lum[i]);
 }
@@ -131,7 +135,7 @@ for (let i = 0; i < COUNT; i++)
   for (let k = 0; k < 3; k++)
     Q[i * 3 + k] = Math.round(((P[i * 3 + k] - min[k]) / (max[k] - min[k])) * 65535);
 
-const out = Buffer.concat([header, Buffer.from(Q.buffer), Buffer.from(N.buffer), Buffer.from(L.buffer)]);
+const out = Buffer.concat([header, Buffer.from(Q.buffer), Buffer.from(N.buffer), Buffer.from(L.buffer), Buffer.from(C.buffer)]);
 fs.writeFileSync(outPath, out);
 console.log(
   JSON.stringify({

@@ -63,7 +63,7 @@ src/
     └── structured-data.ts    # JSON-LD
 public/
 ├── lab/planet/*.pvm          # Baked Planet Rounds maps
-├── models/hero-portrait.points.bin  # Baked hero point cloud (703 KB)
+├── models/hero-portrait-rgb.points.bin  # Baked hero point cloud (914 KB)
 ├── images/og-image.jpg       # 1200 × 630 share image (captured from the hero)
 └── resume.pdf
 assets/
@@ -83,10 +83,10 @@ Both 3D features load small pre-baked binaries instead of raw source files.
 node scripts/bake-planet.mjs ~/Projects/planet-rounds/Assets/StreamingAssets/Maps/oasis.vmap public/lab/planet/oasis.pvm 170
 ```
 
-**Hero portrait.** `bake-head.mjs` samples 72,000 points over the surface of `assets/hero-portrait.glb`, storing quantized positions, normals, and baked brightness (77 MB → 703 KB). The model is a head-and-shoulders bust, so sampling is 2.5× denser above 42% of its height to keep the face detailed. The source GLB is too large for git; keep a copy outside the repo.
+**Hero portrait.** `bake-head.mjs` samples 72,000 points over the surface of `assets/hero-portrait.glb`, storing quantized positions, normals, brightness, and texture color (77 MB → 914 KB). The hero renders the points in monochrome and reveals their color around the cursor. The model is a head-and-shoulders bust, so sampling is 2.5× denser above 42% of its height to keep the face detailed. The source GLB is too large for git; keep a copy outside the repo.
 
 ```bash
-node scripts/bake-head.mjs assets/hero-portrait.glb public/models/hero-portrait.points.bin 72000 2.5 0.42
+node scripts/bake-head.mjs assets/hero-portrait.glb public/models/hero-portrait-rgb.points.bin 72000 2.5 0.42
 ```
 
 The script expects a single mesh with Y up and the face toward +Z.
@@ -103,7 +103,7 @@ Files under `/lab` and `/models` are served with a one-year immutable cache head
 | `paper-muted` | 64% paper (≈7:1) | Body copy |
 | `paper-faint` | 52% paper (≈4.7:1) | Labels, metadata |
 | `signal` | `#4DA3FF` | Accent, links, point-cloud rim light |
-| `ember` | `#FF7A2F` | Planet Rounds, pointer heat |
+| `ember` | `#FF7A2F` | Planet Rounds |
 
 **Typography:** Instrument Sans for headlines and body, Instrument Serif italic for accent words, IBM Plex Mono for labels and HUD text, all via `next/font`. Display sizes use `clamp()` (`text-mega`, `text-hero`).
 

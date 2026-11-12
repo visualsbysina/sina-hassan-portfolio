@@ -19,9 +19,12 @@ uniform float uFadeFloor;
 attribute vec3 aScatter;
 attribute float aLum;
 attribute float aRand;
+attribute vec3 aColor;
 varying float vLum;
 varying float vRim;
-varying float vHeat;
+varying float vReveal;
+varying vec3 vColor;
+varying float vFacing;
 varying float vAlpha;
 
 void main() {
@@ -34,21 +37,22 @@ void main() {
 
   p += normal * sin(uTime * 1.3 + position.y * 7.0 + aRand * 6.2831) * 0.006;
 
-  vec2 d = p.xy - uPointer.xy;
-  float push = smoothstep(0.3, 0.0, length(d)) * uPointerActive * e;
-  p += normalize(vec3(d, 0.35) + normal * 0.4) * push * 0.18;
+  float reveal = smoothstep(0.55, 0.15, length(p.xy - uPointer.xy)) * uPointerActive * e;
 
   float dissolve = smoothstep(aRand * 0.55, aRand * 0.55 + 0.45, uScroll);
   p += (normal * 0.8 + vec3(0.0, 0.7, 0.0) + aScatter * 0.2) * dissolve;
 
   vec4 mv = modelViewMatrix * vec4(p, 1.0);
   gl_Position = projectionMatrix * mv;
-  gl_PointSize = uSize * (1.0 + push * 1.6) / -mv.z;
+  gl_PointSize = uSize / -mv.z;
 
   vec3 vn = normalize(normalMatrix * normal);
-  vRim = pow(1.0 - abs(dot(vn, normalize(-mv.xyz))), 2.0);
+  float facing = dot(vn, normalize(-mv.xyz));
+  vRim = pow(1.0 - abs(facing), 2.0);
   vLum = aLum;
-  vHeat = push;
+  vReveal = reveal;
+  vFacing = smoothstep(0.0, 0.35, facing);
+  vColor = aColor;
   float chest = smoothstep(uFadeFloor, uFadeFloor + 0.75, position.y + (aRand - 0.5) * 0.25);
   vAlpha = e * (1.0 - dissolve) * chest;
 }
@@ -57,20 +61,22 @@ void main() {
 const FRAGMENT = /* glsl */ `
 uniform vec3 uPaper;
 uniform vec3 uSignal;
-uniform vec3 uEmber;
 varying float vLum;
 varying float vRim;
-varying float vHeat;
+varying float vReveal;
+varying vec3 vColor;
+varying float vFacing;
 varying float vAlpha;
 
 void main() {
   vec2 c = gl_PointCoord * 2.0 - 1.0;
   float r = dot(c, c);
   if (r > 1.0) discard;
-  vec3 col = uPaper * (0.22 + vLum * 0.78);
-  col = mix(col, uSignal, clamp(vRim * 1.15, 0.0, 1.0));
-  col = mix(col, uEmber, vHeat * 0.9);
-  float a = (1.0 - r) * vAlpha * (0.3 + vLum * 0.4 + vRim * 0.55 + vHeat * 0.6);
+  vec3 mono = uPaper * (0.22 + vLum * 0.78);
+  mono = mix(mono, uSignal, clamp(vRim * 1.15, 0.0, 1.0));
+  vec3 col = mix(mono, vColor * 1.2, vReveal);
+  // additive points stack, so revealed color needs low alpha and no back faces to stay true
+  float a = (1.0 - r) * vAlpha * mix(0.3 + vLum * 0.4 + vRim * 0.55, 0.55 * vFacing, vReveal);
   gl_FragColor = vec4(col, a);
 }
 `;
@@ -92,6 +98,7 @@ function buildGeometry(cloud: PointCloud) {
   g.setAttribute("position", new THREE.BufferAttribute(cloud.positions, 3));
   g.setAttribute("normal", new THREE.BufferAttribute(cloud.normals, 3));
   g.setAttribute("aLum", new THREE.BufferAttribute(cloud.luminance, 1));
+  g.setAttribute("aColor", new THREE.BufferAttribute(cloud.colors, 3));
   g.setAttribute("aScatter", new THREE.BufferAttribute(scatter, 3));
   g.setAttribute("aRand", new THREE.BufferAttribute(rand, 1));
   g.boundingSphere = new THREE.Sphere(new THREE.Vector3(), 6);
@@ -129,7 +136,6 @@ function Head({
       uFadeFloor: { value: -cloud.extent[1] },
       uPaper: { value: new THREE.Color("#EDEAE3") },
       uSignal: { value: new THREE.Color("#4DA3FF") },
-      uEmber: { value: new THREE.Color("#FF7A2F") },
     }),
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [],
@@ -212,7 +218,7 @@ export default function HeadField({ className, onReady }: { className?: string; 
 
   useEffect(() => {
     let cancelled = false;
-    loadPoints("/models/hero-portrait.points.bin")
+    loadPoints("/models/hero-portrait-rgb.points.bin")
       .then((c) => {
         if (cancelled) return;
         setCloud(c);

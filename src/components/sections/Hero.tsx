@@ -12,9 +12,9 @@ export default function Hero() {
       <HeroCanvas className="absolute inset-0 -z-10 opacity-60 md:opacity-100" />
       <div
         aria-hidden="true"
-        className="absolute inset-0 -z-10 bg-[radial-gradient(ellipse_at_20%_70%,rgba(7,8,10,0.85),transparent_60%)]"
+        className="absolute inset-0 -z-10 bg-[radial-gradient(ellipse_at_18%_72%,rgba(7,8,10,0.55),transparent_58%)]"
       />
-      <div aria-hidden="true" className="absolute inset-x-0 bottom-0 -z-10 h-[38%] bg-gradient-to-t from-void via-void/85 to-transparent" />
+      <div aria-hidden="true" className="absolute inset-x-0 bottom-0 -z-10 h-[32%] bg-gradient-to-t from-void via-void/70 to-transparent" />
 
       <div className="editorial-grid flex min-h-[100svh] flex-col justify-end pb-10 pt-28 md:pb-14">
         <p className="label-mono fade-up mb-6 max-w-md md:mb-8" style={{ "--delay": "100ms" } as React.CSSProperties}>

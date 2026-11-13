@@ -25,11 +25,9 @@ export default function SelectedWork({ projects }: { projects: Project[] }) {
         if (next) {
           gsap.fromTo(
             card.querySelector("[data-card-inner]"),
-            // GSAP can't interpolate from `filter: none`; without an explicit start it tweens brightness up from 0.
-            { scale: 1, filter: "brightness(1)" },
+            { scale: 1 },
             {
-              scale: 0.92,
-              filter: "brightness(0.35)",
+              scale: 0.96,
               ease: "none",
               scrollTrigger: { trigger: next, start: "top bottom", end: "top 96px", scrub: true },
             },
@@ -70,7 +68,7 @@ export default function SelectedWork({ projects }: { projects: Project[] }) {
           <li key={project.slug} data-card className="pb-6 md:sticky md:top-24 md:pb-10" style={{ zIndex: i + 1 }}>
             <article
               data-card-inner
-              className="chrome-edge group relative grid origin-top overflow-hidden border border-void-line bg-void-raised md:min-h-[78svh] md:grid-cols-12"
+              className="chrome-edge group relative isolate grid origin-top overflow-hidden border border-void-line bg-void-raised md:min-h-[78svh] md:grid-cols-12"
             >
               <div className="relative flex flex-col justify-between gap-10 p-6 md:col-span-5 md:p-10">
                 <div>

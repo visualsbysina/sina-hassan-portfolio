@@ -176,6 +176,110 @@
     animation-play-state: paused;
   }
 
+  /*
+   * Prismatic accents: the blue → violet → magenta film on the contact-section lenses.
+   * A soft specular streak rides over the gradient so the fill reads like iridescent glass
+   * rather than a flat rainbow. --chrome-x comes from ChromePointer; --chrome-sweep from scroll.
+   */
+  .chrome-text,
+  .chrome-chip,
+  .chrome-edge::before {
+    background-image:
+      linear-gradient(
+        115deg,
+        transparent 36%,
+        rgba(255, 255, 255, 0.55) 48%,
+        transparent 60%
+      ),
+      linear-gradient(
+        105deg,
+        #19d0ff,
+        #2f7cff 24%,
+        #6a3dff 46%,
+        #b02dff 66%,
+        #ff2f9e 86%,
+        #19d0ff
+      );
+    background-repeat: no-repeat;
+    background-size: 180% 100%, 240% 100%;
+    background-position:
+      calc(var(--chrome-sweep) * 130% + var(--chrome-x, 0) * 35%) 0,
+      calc(var(--chrome-sweep) * 110% + var(--chrome-x, 0) * 28%) 0;
+    background-blend-mode: soft-light, normal;
+  }
+
+  .chrome-text {
+    color: #6a3dff;
+    /* Room for italic overhang, which background-clip would otherwise cut off. */
+    padding-inline: 0.06em 0.12em;
+    margin-inline: -0.06em -0.12em;
+  }
+
+  @supports (background-clip: text) or (-webkit-background-clip: text) {
+    .chrome-text {
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+  }
+
+  .chrome-edge::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 20;
+    padding: 1px;
+    pointer-events: none;
+    background-size: 160% 100%, 220% 100%;
+    -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor;
+    mask: linear-gradient(#000 0 0) content-box exclude, linear-gradient(#000 0 0);
+    opacity: 0;
+    transition: opacity 0.6s cubic-bezier(0.2, 0.7, 0.2, 1);
+  }
+
+  .chrome-edge:hover::before,
+  .chrome-edge:focus-within::before {
+    opacity: 1;
+  }
+
+  .chrome-chip {
+    background-size: 260% 100%, 360% 100%;
+  }
+
+  @media (forced-colors: active) {
+    .chrome-text {
+      background-image: none;
+      color: CanvasText;
+    }
+  }
+}
+
+@property --chrome-sweep {
+  syntax: "<number>";
+  inherits: true;
+  initial-value: 0.5;
+}
+
+@keyframes chrome-sweep {
+  from {
+    --chrome-sweep: 0;
+  }
+  to {
+    --chrome-sweep: 1;
+  }
+}
+
+/* The prismatic film slides across each surface as it travels up the viewport. */
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .chrome-text,
+    .chrome-chip,
+    .chrome-edge {
+      animation: chrome-sweep linear both;
+      animation-timeline: view();
+    }
+  }
 }
 
 /* Outside @layer so it beats the track's width and shrink utilities. */

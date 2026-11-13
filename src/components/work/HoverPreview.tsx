@@ -133,6 +133,7 @@ export default function HoverPreview({ images, state, active }: { images: string
         frameloop={active ? "always" : "never"}
         camera={{ position: [0, 0, 10], zoom: 1, near: 0.1, far: 100 }}
         gl={{ alpha: true, antialias: true }}
+        style={{ pointerEvents: "none" }}
       >
         <Plane images={images} state={state} />
       </Canvas>

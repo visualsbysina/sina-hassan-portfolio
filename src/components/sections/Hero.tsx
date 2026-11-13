@@ -27,14 +27,10 @@ export default function Hero() {
             <span key={i}>
               <span className="rise-mask">
                 <span
-                  className={
-                    word === ACCENT_WORD
-                      ? "rise-word font-serif font-normal italic tracking-[-0.02em] text-signal"
-                      : "rise-word"
-                  }
+                  className={word === ACCENT_WORD ? "rise-word font-serif font-normal italic tracking-[-0.02em]" : "rise-word"}
                   style={{ "--i": i } as React.CSSProperties}
                 >
-                  {word}
+                  {word === ACCENT_WORD ? <span className="chrome-text">{word}</span> : word}
                 </span>
               </span>
               {i < words.length - 1 && " "}

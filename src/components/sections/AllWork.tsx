@@ -50,7 +50,7 @@ export default function AllWork({ projects }: { projects: Project[] }) {
           id="index-heading"
           title={
             <>
-              All <span className="font-serif font-normal italic tracking-[-0.02em]">projects</span>
+              All <span className="font-serif font-normal italic tracking-[-0.02em] chrome-text">projects</span>
             </>
           }
         />

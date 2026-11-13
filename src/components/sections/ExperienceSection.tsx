@@ -11,7 +11,7 @@ export default function ExperienceSection() {
           id="experience-heading"
           title={
             <>
-              14+ years, <span className="font-serif font-normal italic tracking-[-0.02em]">shipping</span>
+              14+ years, <span className="font-serif font-normal italic tracking-[-0.02em] chrome-text">shipping</span>
             </>
           }
         />

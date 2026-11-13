@@ -20,7 +20,7 @@ export default function CredibilityStrip() {
                 className="flex items-center whitespace-nowrap text-[clamp(1.5rem,3.2vw,2.75rem)] font-medium tracking-[-0.03em] text-paper"
               >
                 <span className={i % 2 ? "font-serif font-normal italic text-paper-muted" : undefined}>{item}</span>
-                <span className="mx-8 inline-block h-2 w-2 rotate-45 bg-signal md:mx-12" />
+                <span className="mx-8 inline-block h-2 w-2 rotate-45 chrome-chip md:mx-12" />
               </span>
             ))}
           </div>

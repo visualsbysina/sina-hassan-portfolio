@@ -10,6 +10,7 @@ import SkipLink from "@/components/layout/SkipLink";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import SmoothScroll from "@/components/motion/SmoothScroll";
+import ChromePointer from "@/components/motion/ChromePointer";
 
 const instrumentSans = Instrument_Sans({
   subsets: ["latin"],
@@ -62,6 +63,7 @@ export default function RootLayout({
       <body className="grain-texture font-sans">
         <SkipLink />
         <SmoothScroll />
+        <ChromePointer />
         <Header />
         <main id="main-content" tabIndex={-1} className="outline-none">
           {children}

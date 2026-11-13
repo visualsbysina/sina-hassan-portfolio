@@ -15,7 +15,7 @@ export default function AboutSection() {
           id="about-heading"
           title={
             <>
-              Design <span className="font-serif font-normal italic tracking-[-0.02em] text-signal">meets</span> engineering
+              Design <span className="font-serif font-normal italic tracking-[-0.02em] chrome-text">meets</span> engineering
             </>
           }
         />

@@ -8,7 +8,7 @@ export default function NotFound() {
         <span className="text-signal">(404)</span> Page not found
       </p>
       <h1 className="heading-display mt-6 text-mega text-paper">
-        Lost in <span className="font-serif font-normal italic tracking-[-0.03em]">orbit.</span>
+        Lost in <span className="font-serif font-normal italic tracking-[-0.03em] chrome-text">orbit.</span>
       </h1>
       <p className="text-body mt-8 max-w-md">The page you&apos;re looking for doesn&apos;t exist or has been moved.</p>
       <div className="mt-10 flex flex-wrap gap-3">

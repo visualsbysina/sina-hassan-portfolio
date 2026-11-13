@@ -1,0 +1,9 @@
+node_modules
+.next
+.next-build
+.next-*
+.git
+.claude
+assets
+*.tsbuildinfo
+src/components/motion/PrismPointer.tsx

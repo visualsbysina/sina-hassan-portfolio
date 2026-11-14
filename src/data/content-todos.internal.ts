@@ -32,9 +32,9 @@ export const contentTodos = [
   },
   {
     id: "screenshots",
-    topic: "Missing screenshots and live links",
+    topic: "Screenshot freshness and live links",
     note:
-      "Replace SVG placeholders with final screenshots for IMLS, DOT, Vega, Red Hat, PCAH, Stanley Black & Decker, and Bourne Creatives.",
+      "Project cards use real screenshots and case studies link out via Visit Site. PCAH.gov is defunct; Visit Site and the screenshot both use the Jan 2025 Wayback capture. Re-capture if any of the live sites redesign.",
   },
   {
     id: "pcah-evidence",

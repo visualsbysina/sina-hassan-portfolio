@@ -6,6 +6,7 @@ export const projects: Project[] = [
     number: "01",
     title: "Vega Studio",
     organization: "Vega Studio",
+    url: "https://www.vega.earth/",
     role: "Designer and Full-Stack Developer",
     stack: [
       "Next.js",
@@ -75,6 +76,7 @@ export const projects: Project[] = [
     title: "IMLS 2025 Redesign",
     subtitle: "An accessible Drupal platform for America's libraries and museums",
     organization: "Institute of Museum and Library Services",
+    url: "https://www.imls.gov/",
     role: "Front-End Technical Lead",
     stack: [
       "Drupal 10",
@@ -143,7 +145,7 @@ export const projects: Project[] = [
           caption: "Homepage with accessible navigation and editorial layout",
         },
         {
-          src: "/images/projects/imls-2025-map.svg",
+          src: "/images/projects/imls-2025-map.jpg",
           alt: "Interactive grants map showing funding distribution",
           caption: "Interactive grants map with Highcharts integration",
         },
@@ -155,6 +157,7 @@ export const projects: Project[] = [
     number: "03",
     title: "Stanley Black & Decker Global Multisite",
     organization: "Stanley Black & Decker",
+    url: "https://www.stanleyblackanddecker.com/",
     role: "Drupal Developer",
     stack: [
       "Drupal 10",
@@ -216,6 +219,7 @@ export const projects: Project[] = [
     number: "04",
     title: "Red Hat CloudDot",
     organization: "Red Hat",
+    url: "https://cloud.redhat.com/",
     role: "Drupal Developer",
     stack: ["Drupal", "Twig", "JavaScript", "Accessible UI", "Agile delivery"],
     summary:
@@ -224,7 +228,7 @@ export const projects: Project[] = [
       "Delivered accessible front-end features for Red Hat's cloud-services web experience ahead of a major product deadline.",
     featured: false,
     image: {
-      src: "/images/projects/red-hat-clouddot.svg",
+      src: "/images/projects/red-hat-clouddot.jpg",
       alt: "Red Hat CloudDot platform interface",
       width: 800,
       height: 500,
@@ -261,7 +265,7 @@ export const projects: Project[] = [
       ],
       screenshots: [
         {
-          src: "/images/projects/red-hat-clouddot.svg",
+          src: "/images/projects/red-hat-clouddot.jpg",
           alt: "Red Hat CloudDot dashboard interface",
           caption: "CloudDot platform interface",
         },
@@ -273,6 +277,7 @@ export const projects: Project[] = [
     number: "05",
     title: "Bourne Creatives",
     organization: "Bourne Creatives",
+    url: "https://bournecreatives.com/",
     role: "Front-End Developer",
     stack: ["Responsive UI", "HTML", "CSS", "JavaScript"],
     summary:
@@ -281,7 +286,7 @@ export const projects: Project[] = [
       "Developed a responsive website for a music and entertainment company specializing in 360-degree brand development.",
     featured: false,
     image: {
-      src: "/images/projects/bourne-creatives.svg",
+      src: "/images/projects/bourne-creatives.jpg",
       alt: "Bourne Creatives website",
       width: 800,
       height: 500,
@@ -315,7 +320,7 @@ export const projects: Project[] = [
       ],
       screenshots: [
         {
-          src: "/images/projects/bourne-creatives.svg",
+          src: "/images/projects/bourne-creatives.jpg",
           alt: "Bourne Creatives website homepage",
           caption: "Music and entertainment company website",
         },
@@ -327,6 +332,7 @@ export const projects: Project[] = [
     number: "06",
     title: "U.S. DOT Multisite",
     organization: "U.S. Department of Transportation",
+    url: "https://www.transportation.gov/",
     role: "Senior Software Engineer / Drupal",
     stack: ["Drupal", "Twig", "Sass", "JavaScript", "Section 508", "QA"],
     summary:
@@ -392,6 +398,7 @@ export const projects: Project[] = [
     number: "07",
     title: "PCAH.gov",
     organization: "President's Committee on the Arts and the Humanities",
+    url: "https://web.archive.org/web/20250117222525/https://pcah.gov/",
     role: "Front-End Lead",
     stack: ["Drupal", "Twig", "SCSS", "JavaScript", "Accessibility"],
     summary:
@@ -400,10 +407,10 @@ export const projects: Project[] = [
       "Led front-end development for the public platform of the President's Committee on the Arts and the Humanities.",
     featured: false,
     image: {
-      src: "/images/projects/pcah-gov.svg",
-      alt: "PCAH.gov public platform homepage",
-      width: 800,
-      height: 500,
+      src: "/images/projects/pcah-gov-hero.jpg",
+      alt: "PCAH.gov homepage with title banner and civic engagement mural",
+      width: 1920,
+      height: 1080,
     },
     caseStudy: {
       headline: "A public platform for federal arts and humanities policy",
@@ -439,9 +446,9 @@ export const projects: Project[] = [
       ],
       screenshots: [
         {
-          src: "/images/projects/pcah-gov.svg",
-          alt: "PCAH.gov homepage",
-          caption: "Public platform for federal arts and humanities policy",
+          src: "/images/projects/pcah-gov-hero.jpg",
+          alt: "PCAH.gov homepage with title banner and civic engagement mural",
+          caption: "Homepage hero with title banner and civic engagement mural",
         },
       ],
     },

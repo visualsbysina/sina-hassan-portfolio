@@ -53,6 +53,20 @@ export default function CaseStudyLayout({ project, prev, next }: CaseStudyProps)
             priority
           />
         </div>
+        {project.url && (
+          <div className="mt-6 md:mt-8">
+            <a
+              href={project.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="btn-primary"
+            >
+              Visit Site
+              <span className="sr-only">(opens in a new tab)</span>
+              <ArrowUpRight />
+            </a>
+          </div>
+        )}
       </div>
 
       <div className="editorial-grid py-20 md:py-28">

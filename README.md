@@ -125,9 +125,9 @@ All content lives in typed data files under `src/data/`:
 - **Site copy:** `site.ts` — hero, about, contact, SEO config
 - **Navigation:** `navigation.ts`
 
-## Screenshot Replacement
+## Project Screenshots
 
-Project images live in `public/images/projects/`. Red Hat, PCAH, and Bourne still use SVG placeholders. After adding real images, update the `src` paths in `src/data/projects.ts`. Cards and case studies crop to 16:10 and 16:9; 1600 px wide is a good target.
+Project images live in `public/images/projects/` as 1440×900 JPEGs. Cards and case studies crop to 16:10 and 16:9. PCAH.gov is offline; its screenshot comes from a January 2025 Wayback Machine capture.
 
 ## Deployment to Vercel
 
@@ -148,7 +148,6 @@ Project images live in `public/images/projects/`. Red Hat, PCAH, and Bourne stil
 
 ## Missing Assets & Content
 
-- [ ] Real screenshots for Red Hat, PCAH, and Bourne
 - [ ] Planet Rounds gameplay capture (video or stills) for the lab page
 - [ ] Actual résumé PDF (`public/resume.pdf`)
 - [ ] Confirm contact email and production URL in `src/data/site.ts`

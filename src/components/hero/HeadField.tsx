@@ -16,6 +16,7 @@ uniform float uSize;
 uniform vec3 uPointer;
 uniform float uPointerActive;
 uniform float uFadeFloor;
+uniform float uExtentX;
 uniform float uDetail;
 attribute vec3 aScatter;
 attribute float aLum;
@@ -27,6 +28,7 @@ varying float vReveal;
 varying vec3 vColor;
 varying float vFacing;
 varying float vAlpha;
+varying float vSignalT;
 
 void main() {
   float t = clamp(uIntro * 1.6 - aRand * 0.6, 0.0, 1.0);
@@ -56,12 +58,16 @@ void main() {
   vColor = aColor;
   float chest = smoothstep(uFadeFloor, uFadeFloor + 0.75, position.y + (aRand - 0.5) * 0.25);
   vAlpha = e * (1.0 - dissolve) * chest;
+  // Horizontal signal gradient: purple on the left → blue on the right.
+  float gx = clamp(position.x / max(uExtentX, 0.001) * 0.5 + 0.5, 0.0, 1.0);
+  vSignalT = 1.0 - smoothstep(0.18, 0.82, gx);
 }
 `;
 
 const FRAGMENT = /* glsl */ `
 uniform vec3 uPaper;
-uniform vec3 uSignal;
+uniform vec3 uSignalBlue;
+uniform vec3 uSignalPurple;
 uniform float uDetail;
 varying float vLum;
 varying float vRim;
@@ -69,13 +75,15 @@ varying float vReveal;
 varying vec3 vColor;
 varying float vFacing;
 varying float vAlpha;
+varying float vSignalT;
 
 void main() {
   vec2 c = gl_PointCoord * 2.0 - 1.0;
   float r = dot(c, c);
   if (r > 1.0) discard;
   vec3 mono = uPaper * (0.22 + vLum * 0.78);
-  mono = mix(mono, uSignal, clamp(vRim * 1.15, 0.0, 1.0));
+  vec3 signal = mix(uSignalBlue, uSignalPurple, vSignalT);
+  mono = mix(mono, signal, clamp(vRim * 1.15, 0.0, 1.0));
   vec3 col = mix(mono, vColor * 1.2, vReveal);
   // additive points stack, so revealed color needs low alpha and no back faces to stay true
   float revealAlpha = mix(0.55, 0.1, uDetail) * vFacing;
@@ -193,8 +201,10 @@ function Head({
       uPointer: { value: new THREE.Vector3(9, 9, 0) },
       uPointerActive: { value: 0 },
       uFadeFloor: { value: -cloud.extent[1] },
+      uExtentX: { value: cloud.extent[0] },
       uPaper: { value: new THREE.Color("#EDEAE3") },
-      uSignal: { value: new THREE.Color("#4DA3FF") },
+      uSignalBlue: { value: new THREE.Color("#4DA3FF") },
+      uSignalPurple: { value: new THREE.Color("#6A3DFF") },
       uDetail: { value: 0 },
     }),
     // eslint-disable-next-line react-hooks/exhaustive-deps

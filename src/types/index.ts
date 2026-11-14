@@ -9,6 +9,8 @@ export interface Project {
   title: string;
   subtitle?: string;
   organization?: string;
+  /** Live project URL for the case study “Visit Site” CTA. */
+  url?: string;
   role: string;
   stack: string[];
   summary: string;

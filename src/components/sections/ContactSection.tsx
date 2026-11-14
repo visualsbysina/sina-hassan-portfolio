@@ -7,7 +7,10 @@ export default function ContactSection() {
     <section id="contact" className="section-rule relative scroll-mt-20 overflow-hidden" aria-labelledby="contact-heading">
       <div
         aria-hidden="true"
-        className="absolute bottom-[-40%] left-1/2 h-[80%] w-[90%] -translate-x-1/2 rounded-[100%] bg-signal/15 blur-[140px]"
+        className="absolute bottom-[-52%] left-1/2 h-[70%] w-[85%] -translate-x-1/2 rounded-[100%] blur-[140px]"
+        style={{
+          background: "radial-gradient(circle, rgba(255,122,47,0.3), rgba(255,122,47,0.09) 70%)",
+        }}
       />
       <div className="relative py-24 md:py-40">
         <ShadesCanvas className="pointer-events-none absolute right-[-4%] top-[100px] h-[150px] w-[52%] md:right-[-2%] md:top-[4%] md:h-[62%] md:w-[52%]" />

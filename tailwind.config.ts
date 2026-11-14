@@ -21,8 +21,8 @@ const config: Config = {
           faint: "rgba(237, 234, 227, 0.52)",
         },
         signal: {
-          DEFAULT: "#4DA3FF",
-          deep: "#0A78B5",
+          DEFAULT: "#FF7A2F",
+          deep: "#C94A0A",
         },
         ember: "#FF7A2F",
         cream: {

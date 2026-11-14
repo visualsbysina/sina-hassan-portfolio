@@ -24,7 +24,7 @@ export default function ExperimentsSection() {
                 as="li"
                 key={experiment.slug}
                 delay={(i % 3) * 80}
-                className={`group relative flex min-h-[260px] flex-col justify-between bg-void p-6 transition-colors duration-500 hover:bg-void-raised md:p-8 ${live ? "sm:col-span-2 lg:col-span-1 lg:row-span-2" : ""}`}
+                className={`group relative flex min-h-[260px] flex-col justify-between bg-void p-6 transition-colors duration-500 hover:bg-void-raised active:bg-void-raised md:p-8 ${live ? "sm:col-span-2 lg:col-span-1 lg:row-span-2" : ""}`}
               >
                 <div>
                   <p className="hud-label flex items-center justify-between text-paper-faint">
@@ -55,7 +55,7 @@ export default function ExperimentsSection() {
                       </li>
                     ))}
                   </ul>
-                  {live && <ArrowUpRight className="h-5 w-5 shrink-0 text-ember transition-transform group-hover:-translate-y-1 group-hover:translate-x-1" />}
+                  {live && <ArrowUpRight className="h-5 w-5 shrink-0 text-ember transition-transform group-hover:-translate-y-1 group-hover:translate-x-1 group-active:-translate-y-1 group-active:translate-x-1" />}
                 </div>
               </Reveal>
             );

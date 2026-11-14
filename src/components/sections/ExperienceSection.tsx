@@ -20,9 +20,9 @@ export default function ExperienceSection() {
           {experience.map((item) => (
             <li
               key={`${item.organization}-${item.period}`}
-              className="group grid gap-x-6 gap-y-1 border-b border-void-line py-6 transition-colors duration-300 hover:bg-void-raised md:grid-cols-12 md:items-baseline md:px-3 md:py-7"
+              className="group grid gap-x-6 gap-y-1 border-b border-void-line py-6 transition-colors duration-300 hover:bg-void-raised active:bg-void-raised md:grid-cols-12 md:items-baseline md:px-3 md:py-7"
             >
-              <p className="hud-label text-paper-faint transition-colors group-hover:text-signal md:col-span-3">{item.period}</p>
+              <p className="hud-label text-paper-faint transition-colors group-hover:text-signal group-active:text-signal md:col-span-3">{item.period}</p>
               <div className="md:col-span-5">
                 <h3 className="text-[clamp(1.375rem,2.4vw,2rem)] font-medium leading-tight tracking-[-0.03em] text-paper">
                   {item.organization}

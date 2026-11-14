@@ -320,9 +320,9 @@ export default function HeadField({ className, onReady }: { className?: string; 
     };
   }, [onReady]);
 
-  // Only devices that can hover ever see the dense layer, so only they download it.
+  // Dense color layer under the pointer — load after the base assemble on all devices.
   useEffect(() => {
-    if (!cloud || reducedMotion || !window.matchMedia("(hover: hover) and (pointer: fine)").matches) return;
+    if (!cloud || reducedMotion) return;
     let cancelled = false;
     const timer = window.setTimeout(() => {
       loadPoints("/models/hero-portrait-detail.points.bin")
@@ -338,7 +338,7 @@ export default function HeadField({ className, onReady }: { className?: string; 
   useEffect(() => {
     const onMove = (e: PointerEvent) => {
       const el = container.current;
-      if (!el || e.pointerType === "touch") return;
+      if (!el) return;
       const rect = el.getBoundingClientRect();
       pointer.ndc.set(((e.clientX - rect.left) / rect.width) * 2 - 1, -((e.clientY - rect.top) / rect.height) * 2 + 1);
       pointer.lastMove = performance.now();

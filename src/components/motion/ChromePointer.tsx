@@ -51,7 +51,6 @@ export default function ChromePointer() {
     };
 
     const onMove = (e: PointerEvent) => {
-      if (e.pointerType === "touch") return;
       target.x = (e.clientX / window.innerWidth) * 2 - 1;
       target.y = -(e.clientY / window.innerHeight) * 2 + 1;
       target.px = (e.clientX / window.innerWidth) * 100;

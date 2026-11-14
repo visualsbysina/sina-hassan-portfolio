@@ -24,11 +24,11 @@ export default function AllWork({ projects }: { projects: Project[] }) {
             <li key={project.slug} className="border-b border-void-line">
               <Link
                 href={`/work/${project.slug}`}
-                className="group grid grid-cols-[auto_1fr_auto] items-center gap-x-4 py-5 transition-colors duration-300 hover:text-paper md:grid-cols-12 md:gap-x-6 md:py-7"
+                className="group grid grid-cols-[auto_1fr_auto] items-center gap-x-4 py-5 transition-colors duration-300 hover:text-paper active:text-paper md:grid-cols-12 md:gap-x-6 md:py-7"
               >
-                <span className="hud-label text-paper-faint transition-colors group-hover:text-signal md:col-span-1">{project.number}</span>
+                <span className="hud-label text-paper-faint transition-colors group-hover:text-signal group-active:text-signal md:col-span-1">{project.number}</span>
                 <span className="md:col-span-6">
-                  <span className="block text-[clamp(1.5rem,3.4vw,3rem)] font-medium leading-[1.05] tracking-[-0.035em] text-paper transition-transform duration-500 ease-out group-hover:translate-x-3">
+                  <span className="block text-[clamp(1.5rem,3.4vw,3rem)] font-medium leading-[1.05] tracking-[-0.035em] text-paper transition-transform duration-500 ease-out group-hover:translate-x-3 group-active:translate-x-3">
                     {project.title}
                   </span>
                   <span className="mt-1 block text-[14px] text-paper-faint md:hidden">{project.role}</span>
@@ -42,8 +42,8 @@ export default function AllWork({ projects }: { projects: Project[] }) {
                 <span className="relative h-12 w-[4.5rem] overflow-hidden border border-void-line md:hidden">
                   <Image src={project.image.src} alt="" fill sizes="72px" className="object-cover object-top" />
                 </span>
-                <span className="hidden justify-self-end text-paper-faint transition-colors group-hover:text-paper md:col-span-1 md:block" aria-hidden="true">
-                  <ArrowUpRight className="h-5 w-5 transition-transform duration-300 group-hover:-translate-y-1 group-hover:translate-x-1" />
+                <span className="hidden justify-self-end text-paper-faint transition-colors group-hover:text-paper group-active:text-paper md:col-span-1 md:block" aria-hidden="true">
+                  <ArrowUpRight className="h-5 w-5 transition-transform duration-300 group-hover:-translate-y-1 group-hover:translate-x-1 group-active:-translate-y-1 group-active:translate-x-1" />
                 </span>
               </Link>
             </li>

@@ -99,8 +99,8 @@ export default function SelectedWork({ projects }: { projects: Project[] }) {
                       </li>
                     ))}
                   </ul>
-                  <p className="hud-label mt-8 inline-flex items-center gap-2 text-paper transition-colors group-hover:text-signal" aria-hidden="true">
-                    Read case study <ArrowUpRight className="transition-transform duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
+                  <p className="hud-label mt-8 inline-flex items-center gap-2 text-paper transition-colors group-hover:text-signal group-active:text-signal" aria-hidden="true">
+                    Read case study <ArrowUpRight className="transition-transform duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-active:-translate-y-0.5 group-active:translate-x-0.5" />
                   </p>
                 </div>
               </div>
@@ -111,7 +111,7 @@ export default function SelectedWork({ projects }: { projects: Project[] }) {
                     alt={project.image.alt}
                     fill
                     sizes="(min-width: 768px) 58vw, 100vw"
-                    className="object-cover object-top transition-transform duration-[1.2s] ease-out group-hover:scale-[1.03]"
+                    className="object-cover object-top transition-transform duration-[1.2s] ease-out group-hover:scale-[1.03] group-active:scale-[1.03]"
                     priority={i === 0}
                   />
                 </div>

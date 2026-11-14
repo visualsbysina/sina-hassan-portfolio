@@ -2,14 +2,15 @@
 
 import dynamic from "next/dynamic";
 import { useCallback, useState } from "react";
-import { useWebGL2 } from "@/lib/webgl";
 import { cn } from "@/lib/utils";
+
+/** Keep in sync with the particle assemble duration in HeadField. */
+const INTRO_SECONDS = 2.8;
 
 const HeadField = dynamic(() => import("./HeadField"), { ssr: false });
 
-/** Loads the WebGL portrait only in the browser; a soft glow stands in without WebGL. */
+/** Loads the WebGL portrait; glow eases in with the particle intro once points are ready. */
 export default function HeroCanvas({ className }: { className?: string }) {
-  const webgl = useWebGL2();
   const [ready, setReady] = useState(false);
   const onReady = useCallback(() => setReady(true), []);
 
@@ -17,11 +18,15 @@ export default function HeroCanvas({ className }: { className?: string }) {
     <div className={cn("pointer-events-none", className)} aria-hidden="true">
       <div
         className={cn(
-          "absolute right-[-10%] top-1/2 aspect-square w-[70vmin] -translate-y-1/2 rounded-full bg-signal/10 blur-[120px] transition-opacity duration-1000 md:right-[8%]",
+          "absolute right-[-10%] top-1/2 aspect-square w-[70vmin] -translate-y-1/2 rounded-full blur-[120px] opacity-0 md:right-[8%]",
           ready && "opacity-50",
         )}
+        style={{
+          background: "rgba(106, 61, 255, 0.18)",
+          transition: `opacity ${INTRO_SECONDS}s ease-out`,
+        }}
       />
-      {webgl && <HeadField className="absolute inset-0" onReady={onReady} />}
+      <HeadField className="absolute inset-0" onReady={onReady} />
     </div>
   );
 }

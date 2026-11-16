@@ -15,9 +15,9 @@ export const metadata: Metadata = createPageMetadata({
 const maps = [
   { name: "Coral Reef", size: "783 KB", surface: "91,885" },
   { name: "Spiky Orb", size: "457 KB", surface: "67,148" },
+  { name: "Cursed Orb", size: "311 KB", surface: "134,901" },
   { name: "Tiny Terra Haven", size: "1.5 MB", surface: "64,642" },
   { name: "Circular Cityscape", size: "1.45 MB", surface: "69,782" },
-  { name: "Oasis", size: "147 KB", surface: "80,223" },
 ];
 
 const steps = [
@@ -62,7 +62,7 @@ export default function PlanetRoundsPage() {
   return (
     <>
       <section className="relative h-[100svh] min-h-[560px]" aria-labelledby="planet-heading">
-        <PlanetDemo mode="full" />
+        <PlanetDemo mode="full" initialMap="cursed-orb" />
         <div className="pointer-events-none absolute inset-x-0 top-0 bg-gradient-to-b from-void/90 to-transparent pb-24 pt-24 md:pt-28">
           <div className="editorial-grid">
             <p className="label-mono">
@@ -72,7 +72,7 @@ export default function PlanetRoundsPage() {
               Planet <span className="font-serif font-normal italic tracking-[-0.02em] text-ember">Rounds</span>
             </h1>
             <p className="mt-4 max-w-md text-[15px] leading-relaxed text-paper-muted">
-              Click or tap the surface to blast a crater. Drag to orbit, scroll to zoom, and switch maps from the panel.
+              Click or tap the surface to blast a crater. Drag to orbit, and switch maps from the panel.
             </p>
           </div>
         </div>

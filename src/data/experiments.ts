@@ -5,8 +5,8 @@ export const experiments: Experiment[] = [
     slug: "planet-rounds",
     title: "Planet Rounds",
     description:
-      "A networked tank game I'm building in Unity, fought on small voxel planets where every shell carves the terrain. Its planet renderer is rebuilt for the browser here.",
-    tags: ["Unity", "Three.js", "Web Workers", "GLSL"],
+      "A networked Unity tank game on destructible voxel planets. The planet renderer is rebuilt here in Three.js with the game's real map data.",
+    tags: ["Unity", "Game Dev", "Three.js", "Web Workers"],
     href: "/lab/planet-rounds",
   },
   {

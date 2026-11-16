@@ -71,6 +71,7 @@ assets/
 └── hero-portrait.glb         # 77 MB source model for the hero (gitignored, not served)
 scripts/
 ├── bake-planet.mjs           # Game .vmap → web .pvm
+├── bake-voidfang-skull.mjs   # Game skull .bytes → web mesh
 └── bake-head.mjs             # GLB → point cloud
 ```
 
@@ -78,10 +79,16 @@ scripts/
 
 Both 3D features load small pre-baked binaries instead of raw source files.
 
-**Planet maps.** The game stores maps in `~/Projects/planet-rounds/Assets/StreamingAssets/Maps/*.vmap`. `bake-planet.mjs` downsamples them to a 170³ grid, keeps the game's palette and run-length encoding, and deflates the result (147 KB–1.5 MB per map). In the browser, a Web Worker inflates the file with `DecompressionStream`, meshes visible faces with per-vertex ambient occlusion in 24³ chunks, and re-meshes only the touched chunks when a crater is carved.
+**Planet maps.** The game stores maps in `~/Projects/planet-rounds/Assets/StreamingAssets/Maps/*.vmap`. `bake-planet.mjs` downsamples them to a 170³ grid, keeps the game's palette and run-length encoding, and deflates the result (311 KB–1.5 MB per map). In the browser, a Web Worker inflates the file with `DecompressionStream`, meshes visible faces with per-vertex ambient occlusion in 24³ chunks, and re-meshes only the touched chunks when a crater is carved.
 
 ```bash
-node scripts/bake-planet.mjs ~/Projects/planet-rounds/Assets/StreamingAssets/Maps/oasis.vmap public/lab/planet/oasis.pvm 170
+node scripts/bake-planet.mjs ~/Projects/planet-rounds/Assets/StreamingAssets/Maps/coral-reef.vmap public/lab/planet/coral-reef.pvm 170
+```
+
+Cursed Orb also needs the voidfang skull prop (separate from the `.vmap` in the game):
+
+```bash
+node scripts/bake-voidfang-skull.mjs ~/Projects/planet-rounds/Assets/Resources/Sky/voidfang-skull.bytes public/lab/planet/voidfang-skull.bin
 ```
 
 **Hero portrait.** `bake-head.mjs` samples 72,000 points over the surface of `assets/hero-portrait.glb`, storing quantized positions, normals, brightness, and texture color (77 MB → 914 KB). The hero renders the points in monochrome and reveals their color around the cursor.

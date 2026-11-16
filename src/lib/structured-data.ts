@@ -24,6 +24,8 @@ export function getPersonStructuredData() {
       "Design Systems",
       "Three.js",
       "WebGL",
+      "Game Development",
+      "Unity",
       "Data Visualization",
     ],
   };

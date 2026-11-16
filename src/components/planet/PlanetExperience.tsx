@@ -2,18 +2,27 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Canvas, useFrame, useThree, type ThreeEvent } from "@react-three/fiber";
-import { OrbitControls, PerformanceMonitor } from "@react-three/drei";
+import { Billboard, OrbitControls, PerformanceMonitor } from "@react-three/drei";
 import { Bloom, EffectComposer, Vignette } from "@react-three/postprocessing";
 import * as THREE from "three";
 import type { ChunkMesh } from "@/lib/planet/mesher";
 import type { PlanetRequest, PlanetResponse } from "@/lib/planet/planet.worker";
 import { planetMaps } from "@/data/planet-maps";
+import { loadSkull, type SkullMesh } from "@/lib/planet/skull";
 import { useInView, useReducedMotion } from "@/lib/webgl";
 import { cn } from "@/lib/utils";
 
 const CRATER_RADIUS = 7;
 const MAX_DEBRIS = 2400;
 const PLANET_SPAN = 2.3;
+/** Matches SkullCore.FitGroundShare — skull diameter as a share of outer radius. */
+const SKULL_FIT = 1.55;
+/** Matches VoxelMap.ApplyGlass — simple violet tint, no frost/iridescence. */
+const GLASS_TINT = new THREE.Color(0.55, 0.28, 0.85);
+const GLASS_OPACITY = 0.38;
+const GLASS_FRESNEL = 1.4;
+const EYE_RED = new THREE.Color(1, 0.08, 0.04);
+const SKULL_GLOW = new THREE.Color(0.55, 0.22, 0.75);
 
 interface Stats {
   size: number;
@@ -55,26 +64,65 @@ function toGeometry(chunk: ChunkMesh) {
   return geometry;
 }
 
-function useVoxelMaterial() {
+function useVoxelMaterial(glass: boolean) {
   const time = useRef({ value: 0 });
+  const glassUniform = useRef({ value: glass ? 1 : 0 });
   const material = useMemo(() => {
     const m = new THREE.MeshStandardMaterial({ vertexColors: true, roughness: 0.82, metalness: 0.02 });
+    // Keep depthWrite on (opaque path). Glass uses a Bayer discard after normals
+    // are ready — Three's alphaHash runs too early and OPAQUE resets alpha to 1.
+    m.customProgramCacheKey = () => "voxel-glass-v4";
     m.onBeforeCompile = (shader) => {
       shader.uniforms.uTime = time.current;
+      shader.uniforms.uGlass = glassUniform.current;
+      shader.uniforms.uGlassOpacity = { value: GLASS_OPACITY };
+      shader.uniforms.uGlassFresnel = { value: GLASS_FRESNEL };
+      shader.uniforms.uGlassTint = { value: GLASS_TINT };
       shader.vertexShader = shader.vertexShader
         .replace("#include <common>", "#include <common>\nattribute float aGlow;\nvarying float vGlow;")
         .replace("#include <color_vertex>", "vColor = pow(color.rgb, vec3(2.2));\nvGlow = aGlow;");
       shader.fragmentShader = shader.fragmentShader
-        .replace("#include <common>", "#include <common>\nvarying float vGlow;\nuniform float uTime;")
+        .replace(
+          "#include <common>",
+          `#include <common>
+varying float vGlow;
+uniform float uTime;
+uniform float uGlass;
+uniform float uGlassOpacity;
+uniform float uGlassFresnel;
+uniform vec3 uGlassTint;`,
+        )
         .replace(
           "#include <emissivemap_fragment>",
-          "#include <emissivemap_fragment>\ntotalEmissiveRadiance += vColor * vGlow * (2.2 + 0.8 * sin(uTime * 1.7 + vViewPosition.y * 0.35));",
+          `#include <emissivemap_fragment>
+totalEmissiveRadiance += vColor * vGlow * (2.2 + 0.8 * sin(uTime * 1.7 + vViewPosition.y * 0.35));
+if (uGlass > 0.5) {
+  // Match the game's glass: violet tint + fresnel, Bayer dither, no iridescence.
+  vec3 viewDir = normalize(vViewPosition);
+  float fresnel = pow(1.0 - clamp(dot(normal, viewDir), 0.0, 1.0), 2.0);
+  diffuseColor.rgb = mix(diffuseColor.rgb, diffuseColor.rgb * uGlassTint, 0.55);
+  diffuseColor.rgb += uGlassTint * fresnel * 0.35;
+  float glassAlpha = clamp(uGlassOpacity + fresnel * uGlassFresnel * 0.35, 0.0, 1.0);
+  vec2 bp = floor(mod(gl_FragCoord.xy, 4.0));
+  float bayer = (dot(bp, vec2(1.0, 4.0)) + 4.0 * mod(bp.x * 2.0 + bp.y * 3.0, 4.0)) / 16.0;
+  if (glassAlpha - fract(bayer) < 0.001) discard;
+}`,
         );
     };
     return m;
   }, []);
+  useEffect(() => {
+    glassUniform.current.value = glass ? 1 : 0;
+    material.roughness = glass ? 0.35 : 0.82;
+    material.metalness = glass ? 0.04 : 0.02;
+    material.alphaHash = false;
+    material.opacity = 1;
+    material.transparent = false;
+    material.needsUpdate = true;
+  }, [glass, material]);
   useFrame((_, delta) => {
     time.current.value += delta;
+    glassUniform.current.value = glass ? 1 : 0;
   });
   useEffect(() => () => material.dispose(), [material]);
   return material;
@@ -84,14 +132,16 @@ function Planet({
   geometries,
   onBlast,
   planetRef,
+  glass,
 }: {
   geometries: Map<number, THREE.BufferGeometry>;
   /** bumped whenever geometries change, to re-render */
   version: number;
   onBlast: (local: THREE.Vector3, normal: THREE.Vector3) => void;
   planetRef: React.RefObject<THREE.Group | null>;
+  glass: boolean;
 }) {
-  const material = useVoxelMaterial();
+  const material = useVoxelMaterial(glass);
   const down = useRef<{ x: number; y: number } | null>(null);
   const entries = Array.from(geometries.entries());
 
@@ -273,8 +323,8 @@ void main() {
 }
 `;
 
-function Atmosphere({ radius }: { radius: number }) {
-  const uniforms = useMemo(() => ({ uColor: { value: new THREE.Color("#3d9bff") } }), []);
+function Atmosphere({ radius, color }: { radius: number; color: string }) {
+  const uniforms = useMemo(() => ({ uColor: { value: new THREE.Color(color) } }), [color]);
   return (
     <mesh scale={radius * 1.12}>
       <sphereGeometry args={[1, 64, 48]} />
@@ -288,6 +338,126 @@ function Atmosphere({ radius }: { radius: number }) {
         blending={THREE.AdditiveBlending}
       />
     </mesh>
+  );
+}
+
+function VoidfangSkull({
+  url,
+  outerRadiusCells,
+}: {
+  url: string;
+  /** Outer planet radius in the same cell units as the voxel meshes. */
+  outerRadiusCells: number;
+}) {
+  const [skull, setSkull] = useState<SkullMesh | null>(null);
+  const [geometry, setGeometry] = useState<THREE.BufferGeometry | null>(null);
+  const material = useMemo(() => {
+    const m = new THREE.MeshStandardMaterial({
+      vertexColors: true,
+      roughness: 0.72,
+      metalness: 0.04,
+      emissive: SKULL_GLOW,
+      emissiveIntensity: 0.2,
+      side: THREE.DoubleSide,
+    });
+    return m;
+  }, []);
+  const eyeHalo = useMemo(() => {
+    const size = 64;
+    const data = new Uint8Array(size * size * 4);
+    const mid = (size - 1) * 0.5;
+    for (let y = 0; y < size; y++)
+      for (let x = 0; x < size; x++) {
+        const r = Math.hypot(x - mid, y - mid) / mid;
+        const a = Math.max(0, 1 - r);
+        // Soft core so additive blend stays red instead of clipping to white.
+        const falloff = Math.pow(a, 1.6);
+        const i = (y * size + x) * 4;
+        data[i] = 220;
+        data[i + 1] = 12;
+        data[i + 2] = 6;
+        data[i + 3] = Math.round(falloff * 160);
+      }
+    const tex = new THREE.DataTexture(data, size, size);
+    tex.needsUpdate = true;
+    return new THREE.MeshBasicMaterial({
+      map: tex,
+      color: EYE_RED,
+      transparent: true,
+      depthWrite: false,
+      blending: THREE.AdditiveBlending,
+      toneMapped: false,
+      side: THREE.DoubleSide,
+    });
+  }, []);
+
+  useEffect(() => {
+    let alive = true;
+    let geo: THREE.BufferGeometry | null = null;
+    loadSkull(url)
+      .then((mesh) => {
+        const g = new THREE.BufferGeometry();
+        g.setAttribute("position", new THREE.BufferAttribute(mesh.positions, 3));
+        g.setAttribute("normal", new THREE.BufferAttribute(mesh.normals, 3, true));
+        g.setAttribute("color", new THREE.BufferAttribute(mesh.colors, 3, true));
+        g.setIndex(new THREE.BufferAttribute(mesh.indices, 1));
+        g.computeBoundingSphere();
+        if (!alive) {
+          g.dispose();
+          return;
+        }
+        geo = g;
+        setSkull(mesh);
+        setGeometry(g);
+      })
+      .catch((err) => {
+        console.error("voidfang skull failed to load", err);
+        if (alive) {
+          setSkull(null);
+          setGeometry(null);
+        }
+      });
+    return () => {
+      alive = false;
+      geo?.dispose();
+      setSkull(null);
+      setGeometry(null);
+    };
+  }, [url]);
+
+  useEffect(
+    () => () => {
+      material.dispose();
+      eyeHalo.map?.dispose();
+      eyeHalo.dispose();
+    },
+    [material, eyeHalo],
+  );
+
+  if (!skull || !geometry || outerRadiusCells <= 0) return null;
+
+  const scale = (outerRadiusCells * SKULL_FIT) / Math.max(skull.extent, 0.01);
+  // Match SkullCore: sit the glow a touch out of the socket, sized ~10 cells.
+  const eyes = [
+    [skull.eyeLeft[0], skull.eyeLeft[1], skull.eyeLeft[2] - 2] as const,
+    [skull.eyeRight[0], skull.eyeRight[1], skull.eyeRight[2] - 2] as const,
+  ];
+
+  return (
+    <group scale={scale}>
+      <mesh geometry={geometry} material={material} frustumCulled={false} />
+      <pointLight color={SKULL_GLOW} intensity={1.1} distance={1.7} decay={2} />
+      {eyes.map((pos, i) => (
+        <group key={i} position={pos}>
+          <Billboard follow>
+            <mesh material={eyeHalo} renderOrder={2} scale={7}>
+              <planeGeometry args={[1, 1]} />
+            </mesh>
+          </Billboard>
+          <pointLight color={EYE_RED} intensity={0.9} distance={0.9} decay={2} />
+        </group>
+      ))}
+    </group>
   );
 }
 
@@ -522,16 +692,25 @@ export default function PlanetExperience({ mode = "embed", initialMap = "coral-r
           onCreated={({ gl }) => gl.setClearColor("#07080a")}
         >
           <PerformanceMonitor onDecline={() => setDpr([1, 1])} />
-          <hemisphereLight args={["#bcd6ff", "#1a1410", 0.9]} />
-          <directionalLight position={[4, 3, 2]} intensity={2.4} color="#fff2e0" />
-          <directionalLight position={[-3, -1, -3]} intensity={0.5} color="#4d7dff" />
+          <hemisphereLight args={[map.glass ? "#9a88b8" : "#bcd6ff", map.glass ? "#100814" : "#1a1410", map.glass ? 0.5 : 0.9]} />
+          <directionalLight position={[4, 3, 2]} intensity={map.glass ? 0.95 : 2.4} color={map.glass ? "#e4d8c4" : "#fff2e0"} />
+          <directionalLight position={[-3, -1, -3]} intensity={map.glass ? 0.3 : 0.5} color={map.glass ? "#5a3a98" : "#4d7dff"} />
           <Stars />
           <group ref={worldRef} scale={scale}>
-            <Planet geometries={geometries.current} version={version} onBlast={blast} planetRef={planetRef} />
+            <Planet
+              geometries={geometries.current}
+              version={version}
+              onBlast={blast}
+              planetRef={planetRef}
+              glass={Boolean(map.glass)}
+            />
+            {map.skull && status === "ready" && stats && (
+              <VoidfangSkull url={map.skull} outerRadiusCells={(radius / scale) || stats.size * 0.49} />
+            )}
             <Debris fx={fx} reducedMotion={reducedMotion} />
             <Shocks fx={fx} />
           </group>
-          {status === "ready" && <Atmosphere radius={radius} />}
+          {status === "ready" && <Atmosphere radius={radius} color={map.glass ? "#6e3cb0" : "#3d9bff"} />}
           <ScreenPicker planetRef={planetRef} register={registerPick} onBlast={blast} />
           <CameraShake fx={fx} enabled={!reducedMotion} />
           {touchEmbed ? (
@@ -539,16 +718,19 @@ export default function PlanetExperience({ mode = "embed", initialMap = "coral-r
           ) : (
             <OrbitControls
               enablePan={false}
-              enableZoom={mode === "full"}
-              minDistance={2.2}
-              maxDistance={7}
+              enableZoom={false}
               enableDamping
               autoRotate={!reducedMotion}
               autoRotateSpeed={0.45}
             />
           )}
           <EffectComposer multisampling={0}>
-            <Bloom mipmapBlur luminanceThreshold={0.9} luminanceSmoothing={0.2} intensity={1.15} />
+            <Bloom
+              mipmapBlur
+              luminanceThreshold={map.glass ? 1.35 : 0.9}
+              luminanceSmoothing={0.25}
+              intensity={map.glass ? 0.35 : 1.15}
+            />
             <Vignette offset={0.25} darkness={0.75} />
           </EffectComposer>
         </Canvas>

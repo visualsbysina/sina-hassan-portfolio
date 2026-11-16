@@ -12,8 +12,8 @@ export default function ExperimentsSection() {
             Interactive Experiments
           </h2>
           <p className="max-w-md text-[15px] text-paper-faint md:text-right">
-            Creative laboratory exploring generative systems, WebGL, and browser-based interactive experiences outside of
-            client work.
+            Three.js, WebGL, and game experiments — generative systems, real-time 3D, and playable prototypes outside of
+            client Drupal and React work.
           </p>
         </div>
         <ul className="grid gap-px border border-void-line bg-void-line sm:grid-cols-2 lg:grid-cols-3">

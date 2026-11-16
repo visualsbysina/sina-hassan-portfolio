@@ -5,7 +5,7 @@ import Reveal from "@/components/motion/Reveal";
 import { ArrowUpRight } from "@/components/ui/Icons";
 
 const pipeline = [
-  ["Data", "The game's own map files, downsampled to a 170³ grid and deflated, 147 KB to 1.5 MB each"],
+  ["Data", "The game's own map files, downsampled to a 170³ grid and deflated, 311 KB to 1.5 MB each"],
   ["Meshing", "A Web Worker builds visible faces with per-vertex ambient occlusion in 24³ chunks"],
   ["Destruction", "Craters carve the grid, scorch the rim, and remesh only the chunks they touch"],
   ["Rendering", "Three.js and React Three Fiber, a patched standard material for glow, bloom, instanced debris"],

@@ -21,6 +21,8 @@ export function createMetadata(overrides?: Partial<Metadata>): Metadata {
       "React Three Fiber",
       "Three.js",
       "WebGL",
+      "Game Development",
+      "Unity",
       "Baltimore",
     ],
     authors: [{ name: siteConfig.name }],

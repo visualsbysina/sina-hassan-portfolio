@@ -27,11 +27,13 @@ export const skillCategories: SkillCategory[] = [
     ],
   },
   {
-    title: "Interactive and Data",
+    title: "3D, Games, and Data",
     skills: [
       "Three.js",
       "React Three Fiber",
-      "WebGL",
+      "WebGL / GLSL",
+      "Unity",
+      "Game systems",
       "Highcharts",
       "REST APIs",
       "Data visualization",

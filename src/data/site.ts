@@ -5,7 +5,7 @@ export const siteConfig: SiteConfig = {
   title: "Sina Hassan — Senior Front-End Developer",
   description:
     "Senior front-end developer specializing in Drupal, React, and design systems — with deep Three.js, WebGL, and game-development work for accessible platforms and interactive experiences.",
-  url: "https://sinahassan.com",
+  url: "https://sina.software",
   email: "hello@sinahassan.com",
   location: "Baltimore, MD",
   jobTitle: "Senior Front-End Developer",
